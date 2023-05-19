@@ -21,8 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   FirebaseAuth auth = FirebaseAuth.instance;
-  String completeAddress = "";
-
   Future<void> requestLocationPermission() async {
     if (await Permission.location.isGranted) {
       // Permission already granted
@@ -60,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Position newPosition = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
+    position=newPosition;
     List<Placemark> placemarks = await placemarkFromCoordinates(
       newPosition.latitude,
       newPosition.longitude,
@@ -68,10 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Placemark placemark = placemarks.first;
     String newCompleteAddress =
         '${placemark.street} ${placemark.locality} ${placemark.postalCode} ${placemark.country}';
+    completeAddress = newCompleteAddress.trim();
 
-    setState(() {
-      completeAddress = newCompleteAddress.trim();
-    });
 
     return completeAddress;
   }
@@ -94,14 +91,14 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            /*Padding(
-              padding: const EdgeInsets.only(top: 5, left: 9, right: 9),
+         Padding(
+              padding: const EdgeInsets.only(top: 15, left: 9, right: 9),
               child: Row(
                 children: [
                   Container(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color(0xFF266AFE),
+                      color: Colors.blueAccent,
                     ),
                     padding: const EdgeInsets.all(3),
                     child: GestureDetector(
@@ -119,8 +116,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-            ),*/
-            Expanded(child: SizedBox(),),
+            ),
+            Expanded(
+              child: SizedBox(),
+            ),
             Center(
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.4,
