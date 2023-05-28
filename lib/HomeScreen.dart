@@ -9,6 +9,7 @@ import 'package:resell_app/globalVar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:resell_app/imageSlider.dart';
 import 'package:resell_app/uploadAdScreen.dart';
 import 'package:timeago/timeago.dart' as tAgo;
 
@@ -118,111 +119,149 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCount: items!.docs.length,
             padding: const EdgeInsets.all(8.0),
             itemBuilder: (context, i) {
-              return Container(
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            items?.docs[i].get('userName'),
-                          ),
-                        ),
-                        trailing: items?.docs[i].get('uid') == userId
-                            ? Row(
-                                mainAxisSize: MainAxisSize.min,
+              return Card(
+                color: Colors.white70,
+                clipBehavior: Clip.antiAlias,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onDoubleTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder:(_)=>ImageSliderScreen(
+                          title: items?.docs[i].get('itemModel'),
+                          itemColor: items?.docs[i].get('itemColor'),
+                          userNumber:  items?.docs[i].get('userNumber'),
+                          description: items?.docs[i].get('description'),
+                          lat:  items?.docs[i].get('lat'),
+                          lng: items?.docs[i].get('lng'),
+                          address: items?.docs[i].get('address'),
+                          urlImage1: items?.docs[i].get('urlImage1'),
+                          urlImage2: items?.docs[i].get('urlImage2'),
+                          urlImage3: items?.docs[i].get('urlImage3'),
+                          urlImage4: items?.docs[i].get('urlImage4'),
+                          urlImage5: items?.docs[i].get('urlImage5'),
+                        )));
+                      },
+                      child: Container(
+                        height: 150,
+                        width: 150,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Image.network(
+                            items?.docs[i].get("urlImage1"),
+                            fit: BoxFit.fill),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Container(
+                        height: 150,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width-190,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   GestureDetector(
                                     onTap: () {},
-                                    child: const Icon(
-                                      Icons.edit_outlined,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  GestureDetector(
-                                    onDoubleTap: () {},
-                                    child:
-                                        const Icon(Icons.delete_forever_sharp),
-                                  )
-                                ],
-                              )
-                            : const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [],
-                              ),
-                      ),
-                      GestureDetector(
-                        onDoubleTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Container(
-                            height: 150,
-                            child: Image.network(
-                                items?.docs[i].get("urlImage1"),
-                                fit: BoxFit.fill),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "\$${items?.docs[i].get("itemPrice")}",
-                          style: const TextStyle(
-                            letterSpacing: 2.0,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.image_sharp,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
                                     child: Text(
-                                      items?.docs[i].get("itemModel"),
+                                      items?.docs[i].get('userName'),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.watch_later_outlined,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(tAgo.format(
-                                        (items?.docs[i].get('time')).toDate())),
+                                  items?.docs[i].get('uid') == userId
+                                      ? Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {},
+                                        child: const Icon(
+                                          Icons.edit_outlined,
+
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: GestureDetector(
+                                          onDoubleTap: () {},
+                                          child: const Icon(Icons.delete_forever_sharp),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                      : const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(top: 2),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [       Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.image_sharp,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 2.0),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          items?.docs[i].get("itemModel"),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 2.0),
+                                        child: Text(
+                                          "\$${items?.docs[i].get("itemPrice")}",
+                                          style: const TextStyle(
+                                            letterSpacing: 2.0,
+                                            fontSize: 24,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.watch_later_outlined,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 2.0),
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(tAgo.format(
+                                              (items?.docs[i].get('time'))
+                                                  .toDate())),
+                                        ),
+                                      ),
+                                    ],
+                                  ),],),
+                              ),
+                            ),
+
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               );
             });
       } else {
-        return (Text("Loading"));
+        return const Center(
+          child: (Text("Loading")),
+        );
       }
     }
 
