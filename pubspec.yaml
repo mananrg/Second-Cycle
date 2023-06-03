@@ -52,6 +52,8 @@ dependencies:
   carousel_slider:
   maps_launcher:
   cached_network_image:
+  whatsapp_unilink:
+  google_mobile_ads:
 
 dev_dependencies:
   flutter_test:

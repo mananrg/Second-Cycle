@@ -11,6 +11,7 @@ import 'package:resell_app/DialogBox/loadingDialog.dart';
 import 'package:resell_app/globalVar.dart';
 import 'package:path/path.dart' as Path;
 
+import 'BannerAd.dart';
 import 'DialogBox/loadingDialog.dart';
 import 'HomeScreen.dart';
 import 'globalVar.dart';
@@ -81,9 +82,14 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                           uploading = true;
                           next = true;
                         });
-                      } else {
+                      } else if(_image.length>5){
                         showToast(
                           "Please select 5 images only....",
+                          seconds: 2,
+                        );
+                      }else if(_image.length<5){
+                        showToast(
+                          "Please select 5 images to proceed...",
                           seconds: 2,
                         );
                       }
@@ -332,6 +338,9 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                 : Container()
           ],
         ),
+        Expanded(child: SizedBox(),),
+        BannerAdWidget(), // Top banner ad
+
       ],
     );
   }

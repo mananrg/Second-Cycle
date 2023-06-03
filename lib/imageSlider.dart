@@ -1,7 +1,10 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
+
+import 'BannerAd.dart';
 
 class ImageSliderScreen extends StatefulWidget {
   ImageSliderScreen({
@@ -19,34 +22,36 @@ class ImageSliderScreen extends StatefulWidget {
     required this.urlImage4,
     required this.urlImage5,
   }) : super(key: key);
+
   final String title, itemColor, userNumber, description, address;
   final String urlImage1, urlImage2, urlImage3, urlImage4, urlImage5;
   final double lat, lng;
+
   @override
   State<ImageSliderScreen> createState() => _ImageSliderScreenState();
 }
 
-class _ImageSliderScreenState extends State<ImageSliderScreen>
-    with SingleTickerProviderStateMixin {
+class _ImageSliderScreenState extends State<ImageSliderScreen> {
   late CarouselController _carouselController;
-
-  late TabController tabController;
-  static List<String> links = [];
+  late List<String> links;
+  int _currentPage = 0; // Track the current page
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getLinks();
+    links = [
+      widget.urlImage1,
+      widget.urlImage2,
+      widget.urlImage3,
+      widget.urlImage4,
+      widget.urlImage5,
+    ];
     _carouselController = CarouselController();
   }
 
-  getLinks() {
-    links.add(widget.urlImage1);
-    links.add(widget.urlImage2);
-    links.add(widget.urlImage3);
-    links.add(widget.urlImage4);
-    links.add(widget.urlImage5);
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -61,12 +66,15 @@ class _ImageSliderScreenState extends State<ImageSliderScreen>
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            BannerAdWidget(), // Top banner ad
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 6.0, right: 12.00),
+              padding: const EdgeInsets.only(top: 20, left: 6.0, right: 12.0),
               child: Row(
                 children: [
                   const Icon(
@@ -77,6 +85,7 @@ class _ImageSliderScreenState extends State<ImageSliderScreen>
                     width: 4.0,
                   ),
                   Expanded(
+                    flex: 1,
                     child: Text(
                       widget.address,
                       textAlign: TextAlign.justify,
@@ -87,109 +96,89 @@ class _ImageSliderScreenState extends State<ImageSliderScreen>
                 ],
               ),
             ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(width: 2),
+              ),
+              child: CarouselSlider(
+                carouselController: _carouselController,
+                items: links.map((url) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.fill,
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                    ),
+                  );
+                }).toList(),
+                options: CarouselOptions(
+                  initialPage: 0, // Set the initial page
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.8,
+                  enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                  scrollDirection: Axis.horizontal,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _currentPage = index; // Update the current page
+                    });
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "Description",
+              style: TextStyle(
+                fontSize: 19,
+                color: Colors.black54,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Container(
+              height: 1,
+              color: Colors.grey,
+            ),
+            Container(
+              height: 3,
+            ),
+            Text("Item: ${widget.title}"),
+            Text("Item Color: ${widget.itemColor}"),
+            Text("Description: ${widget.description}"),
+            Expanded(child: SizedBox()),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints.tightFor(width: 368),
+                child: ElevatedButton(
+                  child: const Text("Check Seller Location"),
+                  onPressed: () {
+                    MapsLauncher.launchCoordinates(widget.lat, widget.lng);
+                  },
+                ),
+              ),
+            ),
             const SizedBox(
-              height: 20.0,
+              height: 5,
             ),
-            Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 2),
-                  ),
-                  child: CarouselSlider(
-                    items: links.map((url) {
-                      if (kDebugMode) {
-                        print(url);
-                      }
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          url,
-                          fit: BoxFit.fill,
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                        ),
-                      );
-                    }).toList(),
-                    options: CarouselOptions(
-                      reverse: false, // Disable reverse sliding
-                      enableInfiniteScroll: false, // Disable infinite scrolling
-                      enlargeCenterPage: true, // Enlarge the center page
-                      viewportFraction:
-                          0.8, // Set the visible fraction of the carousel item
-                      enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                      scrollDirection:
-                          Axis.horizontal, // Set the scroll directio
-                    ),
-                  ),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints.tightFor(width: 368),
+                child: ElevatedButton(
+                  child: const Text("Contact Seller"),
+                  onPressed: () async {
+                    final link = WhatsAppUnilink(
+                      phoneNumber: '+1 ${widget.userNumber}',
+                      text: "Hey! I'm inquiring about the ${widget.title}",
+                    );
+                    await launch(link.toString());
+                  },
                 ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.brush),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Text(widget.itemColor),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.phone),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Text(widget.userNumber),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Text(
-                    widget.description,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints.tightFor(width: 368),
-                    child: ElevatedButton(
-                      child: const Text("Check Seller Location"),
-                      onPressed: () {
-                        MapsLauncher.launchCoordinates(widget.lat, widget.lng);
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
+              ),
             ),
+            BannerAdWidget(), // Bottom banner ad
           ],
         ),
       ),

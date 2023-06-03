@@ -230,7 +230,7 @@ class _SearchScreenState extends State<SearchScreen> {
             );
           });
     } else {
-      return Center(
+      return const Center(
         child: (Text("Loading...")),
       );
     }

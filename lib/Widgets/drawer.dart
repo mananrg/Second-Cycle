@@ -32,7 +32,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: const Text('Profile'),
+            title: const Text('My Ads'),
             onTap: () {
               // Handle Home button tap
               Navigator.push(

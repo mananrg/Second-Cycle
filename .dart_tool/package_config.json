@@ -207,7 +207,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/manangandhi/development/flutter/packages/flutter",
+      "rootUri": "file:///Users/manangandhi/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -237,7 +237,7 @@
     },
     {
       "name": "flutter_localizations",
-      "rootUri": "file:///Users/manangandhi/development/flutter/packages/flutter_localizations",
+      "rootUri": "file:///Users/manangandhi/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -255,13 +255,13 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///Users/manangandhi/development/flutter/packages/flutter_test",
+      "rootUri": "file:///Users/manangandhi/flutter/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///Users/manangandhi/development/flutter/packages/flutter_web_plugins",
+      "rootUri": "file:///Users/manangandhi/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -324,6 +324,12 @@
       "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/geolocator_windows-0.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.15"
+    },
+    {
+      "name": "google_mobile_ads",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/google_mobile_ads-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "http",
@@ -549,7 +555,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/manangandhi/development/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/manangandhi/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -704,6 +710,42 @@
       "languageVersion": "2.14"
     },
     {
+      "name": "visibility_detector",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/visibility_detector-0.3.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "webview_flutter",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/webview_flutter-4.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "webview_flutter_android",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/webview_flutter_android-3.7.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "webview_flutter_platform_interface",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/webview_flutter_platform_interface-2.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "webview_flutter_wkwebview",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.4.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "whatsapp_unilink",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/whatsapp_unilink-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "win32",
       "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/win32-4.1.4",
       "packageUri": "lib/",
@@ -734,7 +776,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-06-02T22:53:38.957330Z",
+  "generated": "2023-06-03T04:03:46.197331Z",
   "generator": "pub",
   "generatorVersion": "3.0.0"
 }
