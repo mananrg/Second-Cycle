@@ -53,37 +53,10 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
     return Scaffold(
       appBar: AppBar(
         title: next
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ? const Text("Enter Appropriate Info")
+            : const Row(
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => const HomeScreen(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                  const Text("Enter Appropriate Info"),
-                ],
-              )
-            : Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => const HomeScreen(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                  const Text(
+                  Text(
                     "Choose the Image",
                     style: TextStyle(
                       fontSize: 18.0,
@@ -240,12 +213,12 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                             backgroundColor: Colors.transparent,
                             content: AwesomeSnackbarContent(
                               title: 'Successful!',
-                              message: "Data Uploaded Successfully!",
+                              message: "Ad Uploaded Successfully!\nPlease wait upto 24hrs for your ad to get verified!",
                               contentType: ContentType.success,
                             ),
                           ),
                         );
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const HomeScreen()));

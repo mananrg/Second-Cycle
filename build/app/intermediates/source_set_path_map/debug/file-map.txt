@@ -34,5 +34,6 @@ com.example.resell_app-packaged_res-32 /Users/manangandhi/Desktop/resell_app/bui
 com.example.resell_app-packaged_res-33 /Users/manangandhi/Desktop/resell_app/build/geocoding_android/intermediates/packaged_res/debug
 com.example.resell_app-packaged_res-34 /Users/manangandhi/Desktop/resell_app/build/geolocator_android/intermediates/packaged_res/debug
 com.example.resell_app-packaged_res-35 /Users/manangandhi/Desktop/resell_app/build/image_picker_android/intermediates/packaged_res/debug
-com.example.resell_app-packaged_res-36 /Users/manangandhi/Desktop/resell_app/build/permission_handler_android/intermediates/packaged_res/debug
-com.example.resell_app-packaged_res-37 /Users/manangandhi/Desktop/resell_app/build/url_launcher_android/intermediates/packaged_res/debug
+com.example.resell_app-packaged_res-36 /Users/manangandhi/Desktop/resell_app/build/maps_launcher/intermediates/packaged_res/debug
+com.example.resell_app-packaged_res-37 /Users/manangandhi/Desktop/resell_app/build/permission_handler_android/intermediates/packaged_res/debug
+com.example.resell_app-packaged_res-38 /Users/manangandhi/Desktop/resell_app/build/url_launcher_android/intermediates/packaged_res/debug

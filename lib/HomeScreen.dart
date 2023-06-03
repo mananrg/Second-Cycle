@@ -2,8 +2,9 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:resell_app/SignupScreen/signUpScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:resell_app/ProfileSection.dart';
+import 'package:resell_app/SearchScreen.dart';
 import 'package:resell_app/Widgets/drawer.dart';
 import 'package:resell_app/globalVar.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:resell_app/imageSlider.dart';
 import 'package:resell_app/uploadAdScreen.dart';
 import 'package:timeago/timeago.dart' as tAgo;
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -22,7 +24,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  FirebaseAuth auth = FirebaseAuth.instance;
   QuerySnapshot? items;
+
   getMyData() {
     FirebaseFirestore.instance
         .collection('users')
@@ -35,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  FirebaseAuth auth = FirebaseAuth.instance;
   Future<void> requestLocationPermission() async {
     if (await Permission.location.isGranted) {
       // Permission already granted
@@ -56,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SnackBar(
               elevation: 0,
               behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               content: AwesomeSnackbarContent(
                 title: 'Location Permission Denied!',
                 message:
@@ -84,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
         '${placemark.street} ${placemark.locality} ${placemark.postalCode} ${placemark.country}';
     completeAddress = newCompleteAddress.trim();
 
-    return completeAddress;
+    return  completeAddress;
   }
 
   @override
@@ -101,185 +104,234 @@ class _HomeScreenState extends State<HomeScreen> {
         .then((results) {
       setState(() {
         items = results;
-        print("*" * 100);
-        print(items?.docs.length);
-        print("*" * 100);
       });
     });
     getMyData();
+    getUserAddress();
   }
 
   @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
-    Widget? showItemList() {
-      if (items != null) {
-        return ListView.builder(
-            itemCount: items!.docs.length,
-            padding: const EdgeInsets.all(8.0),
-            itemBuilder: (context, i) {
-              return Card(
-                color: Colors.white70,
-                clipBehavior: Clip.antiAlias,
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onDoubleTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder:(_)=>ImageSliderScreen(
-                          title: items?.docs[i].get('itemModel'),
-                          itemColor: items?.docs[i].get('itemColor'),
-                          userNumber:  items?.docs[i].get('userNumber'),
-                          description: items?.docs[i].get('description'),
-                          lat:  items?.docs[i].get('lat'),
-                          lng: items?.docs[i].get('lng'),
-                          address: items?.docs[i].get('address'),
-                          urlImage1: items?.docs[i].get('urlImage1'),
-                          urlImage2: items?.docs[i].get('urlImage2'),
-                          urlImage3: items?.docs[i].get('urlImage3'),
-                          urlImage4: items?.docs[i].get('urlImage4'),
-                          urlImage5: items?.docs[i].get('urlImage5'),
-                        )));
-                      },
-                      child: Container(
-                        height: 150,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Image.network(
-                            items?.docs[i].get("urlImage1"),
-                            fit: BoxFit.fill),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Container(
-                        height: 150,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width-190,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {},
-                                    child: Text(
-                                      items?.docs[i].get('userName'),
-                                    ),
-                                  ),
-                                  items?.docs[i].get('uid') == userId
-                                      ? Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: const Icon(
-                                          Icons.edit_outlined,
-
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 8.0),
-                                        child: GestureDetector(
-                                          onDoubleTap: () {},
-                                          child: const Icon(Icons.delete_forever_sharp),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                      : const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(top: 2),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [       Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.image_sharp,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 2.0),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          items?.docs[i].get("itemModel"),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 2.0),
-                                        child: Text(
-                                          "\$${items?.docs[i].get("itemPrice")}",
-                                          style: const TextStyle(
-                                            letterSpacing: 2.0,
-                                            fontSize: 24,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.watch_later_outlined,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 2.0),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text(tAgo.format(
-                                              (items?.docs[i].get('time'))
-                                                  .toDate())),
-                                        ),
-                                      ),
-                                    ],
-                                  ),],),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            });
-      } else {
-        return const Center(
-          child: (Text("Loading")),
-        );
-      }
-    }
 
     return Scaffold(
       key: _scaffoldKey,
       drawer: const MyDrawer(),
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            width: _screenWidth,
-            child: showItemList(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
+        ),
+        title: Text("Second Handz"),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child:IconButton(icon:const Icon(Icons.search_rounded),onPressed: (){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>SearchScreen()));
+            },)
+          )
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const HomeScreen(),
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                      onTap: () {},
+                      child: Opacity(
+                        opacity: 0.6,
+                        child: Card(
+                          color: Colors.orange,
+                          child: SizedBox(
+                            width: _screenWidth * 0.45,
+                            height: _screenWidth * 0.45,
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Events",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Coming Soon',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )),
+                  GestureDetector(
+                      onTap: () {},
+                      child: Opacity(
+                        opacity: 0.6,
+                        child: Card(
+                          color: Colors.blue,
+                          child: SizedBox(
+                            width: _screenWidth * 0.45,
+                            height: _screenWidth * 0.45,
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Accommodation",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Coming Soon',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )),
+                ],
+              ),
+              Expanded(
+                child: items != null
+                    ?
+                GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // Number of columns in the grid
+                          crossAxisSpacing: 8.0, // Spacing between columns
+                          mainAxisSpacing: 8.0, // Spacing between rows
+                         childAspectRatio: 0.82, // Width to height ratio of each grid item
+                        ),
+                        itemCount: items!.docs.length,
+                        padding: const EdgeInsets.all(8.0),
+                        itemBuilder: (context, i) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: Colors.grey, //color of border
+                                width: 0.5, //width of border
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ImageSliderScreen(
+                                            title:
+                                                items?.docs[i].get('itemModel'),
+                                            itemColor:
+                                                items?.docs[i].get('itemColor'),
+                                            userNumber:
+                                                items?.docs[i].get('userNumber'),
+                                            description:
+                                                items?.docs[i].get('description'),
+                                            lat: items?.docs[i].get('lat'),
+                                            lng: items?.docs[i].get('lng'),
+                                            address:
+                                                items?.docs[i].get('address'),
+                                            urlImage1:
+                                                items?.docs[i].get('urlImage1'),
+                                            urlImage2:
+                                                items?.docs[i].get('urlImage2'),
+                                            urlImage3:
+                                                items?.docs[i].get('urlImage3'),
+                                            urlImage4:
+                                                items?.docs[i].get('urlImage4'),
+                                            urlImage5:
+                                                items?.docs[i].get('urlImage5'),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.zero,
+                                      height: 130,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child:CachedNetworkImage(
+                                          imageUrl:  items?.docs[i].get("urlImage1"),
+                                          placeholder: (context, url) => const Center(child: SizedBox(height: 50,width: 50,child: CircularProgressIndicator(),),), // Optional placeholder widget while loading
+                                          errorWidget: (context, url, error) => const Icon(Icons.error), // Optional error widget if image fails to load
+                                        fit:  BoxFit.fill,
+                                        ),
+
+
+
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox(),),
+                                  Text(
+                                    "\$${items?.docs[i].get("itemPrice")}",
+                                    style: const TextStyle(
+                                      letterSpacing: 2.0,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 2.0),
+                                    child: Text(
+                                      "${items?.docs[i].get("itemModel")}"
+                                          .toUpperCase(),
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 2.0),
+                                    child: Text(tAgo.format(
+                                      (items?.docs[i].get('time')).toDate(),
+                                    )),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                    : const Center(
+                        child: Text("Loading..."),
+                      ),
+              ),
+            ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add Post',
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => const UploadAdScreen(),

@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class ImageSliderScreen extends StatefulWidget {
   ImageSliderScreen({
@@ -170,18 +171,23 @@ class _ImageSliderScreenState extends State<ImageSliderScreen>
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(width: 368),
+                    constraints: const BoxConstraints.tightFor(width: 368),
                     child: ElevatedButton(
-                      child: Text("Check Seller Location"),
-                      onPressed: () {},
+                      child: const Text("Check Seller Location"),
+                      onPressed: () {
+                        MapsLauncher.launchCoordinates(widget.lat, widget.lng);
+                      },
                     ),
                   ),
-                )
+                ),
+                SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ],

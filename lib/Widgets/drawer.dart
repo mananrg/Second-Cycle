@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:resell_app/ProfileSection.dart';
 import 'package:resell_app/SignupScreen/componets/body.dart';
+import 'package:resell_app/globalVar.dart';
 
 import '../SignupScreen/signUpScreen.dart';
 
@@ -15,30 +17,30 @@ class MyDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-        DrawerHeader(
+          DrawerHeader(
             decoration: const BoxDecoration(
               color: Colors.blue,
             ),
-            child:   Container(
+            child: Container(
               child: CircleAvatar(
-                backgroundColor: Colors.blueAccent,
-                backgroundImage: Image.asset('assets/images/person.jpg',scale: 5,).image
-
-              ),
+                  backgroundColor: Colors.blueAccent,
+                  backgroundImage: Image.asset(
+                    'assets/images/person.jpg',
+                    fit: BoxFit.fitHeight,
+                  ).image),
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.refresh),
-            title: const Text('Refresh'),
-            onTap: () {
-              // Handle Home button tap
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.person),
-            title: const Text('Home'),
+            title: const Text('Profile'),
             onTap: () {
               // Handle Home button tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) =>  MyProfile(sellerId:userId),
+                ),
+              );
             },
           ),
           ListTile(
@@ -56,7 +58,6 @@ class MyDrawer extends StatelessWidget {
               });
             },
           ),
-
         ],
       ),
     );

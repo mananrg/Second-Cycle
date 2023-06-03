@@ -50,8 +50,8 @@ dependencies:
   awesome_snackbar_content:
   permission_handler:
   carousel_slider:
-
-
+  maps_launcher:
+  cached_network_image:
 
 dev_dependencies:
   flutter_test:
