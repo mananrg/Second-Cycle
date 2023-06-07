@@ -253,6 +253,12 @@ class _MyProfileState extends State<MyProfile> {
                           builder: (_) => ImageSliderScreen(
                             title: items?.docs[i].get('itemModel'),
                             itemColor: items?.docs[i].get('itemColor'),
+                            itemPrice: items?.docs[i]
+                                .get('itemPrice'),
+                            userName: items?.docs[i]
+
+                            .get('userName'),
+
                             userNumber: items?.docs[i].get('userNumber'),
                             description: items?.docs[i].get('description'),
                             lat: items?.docs[i].get('lat'),
@@ -408,7 +414,7 @@ class _MyProfileState extends State<MyProfile> {
             );
           });
     } else {
-      return Center(
+      return const Center(
         child: (Text("Loading...")),
       );
     }

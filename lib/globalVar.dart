@@ -6,6 +6,7 @@ String userId = "";
 String userEmail = "";
 String userImageUrl = "";
 String getUserName = "";
+String getUserNumber = "";
 
 String adUserName = "";
 String adUserImageUrl = "";

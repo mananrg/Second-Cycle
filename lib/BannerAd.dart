@@ -23,7 +23,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   }
 
   void _loadBannerAd() {
-    final adUnitId = "ca-app-pub-3940256099942544/6300978111"; // Replace with your actual ad unit ID
+    const adUnitId = "ca-app-pub-3940256099942544/6300978111"; // Replace with your actual ad unit ID
 
     _bannerAd = BannerAd(
       adUnitId: adUnitId,

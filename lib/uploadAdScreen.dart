@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -10,11 +10,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:resell_app/DialogBox/loadingDialog.dart';
 import 'package:resell_app/globalVar.dart';
 import 'package:path/path.dart' as Path;
-
 import 'BannerAd.dart';
-import 'DialogBox/loadingDialog.dart';
 import 'HomeScreen.dart';
-import 'globalVar.dart';
 
 class UploadAdScreen extends StatefulWidget {
   const UploadAdScreen({Key? key}) : super(key: key);
@@ -28,7 +25,7 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
   double val = 0;
   late CollectionReference imageRef;
   late firebase_storage.Reference ref;
-  StreamController<int> _deleteImageController =
+  final StreamController<int> _deleteImageController =
       StreamController<int>.broadcast();
 
   String imgFile = "",
@@ -48,11 +45,32 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
   String itemModel = "";
   String itemColor = "";
   String description = "";
+String? youtubeLink="";
+  getMyData() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .get()
+        .then((results) {
+      setState(() {
+        getUserName = results.data()?['userName'];
+        getUserNumber = results.data()?['userNumber'];
+        if (kDebugMode) {
+          print("*" * 10);
+          print(getUserNumber);
+          print("*" * 10);
+        }
+
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton( icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),),
         title: next
             ? const Text("Enter Appropriate Info")
             : const Row(
@@ -82,12 +100,12 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                           uploading = true;
                           next = true;
                         });
-                      } else if(_image.length>5){
+                      } else if (_image.length > 5) {
                         showToast(
                           "Please select 5 images only....",
                           seconds: 2,
                         );
-                      }else if(_image.length<5){
+                      } else if (_image.length < 5) {
                         showToast(
                           "Please select 5 images to proceed...",
                           seconds: 2,
@@ -114,25 +132,25 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
+              controller:
+                  TextEditingController(text: getUserName.toUpperCase()),
+              enabled: false, // Disable editing
               decoration: const InputDecoration(
-                label: Text("Name"),
+                labelText: "Name",
               ),
-              onChanged: (val) {
-                userName = val;
-              },
             ),
             TextField(
+              controller: TextEditingController(text: getUserNumber),
+              enabled: false, // Disable editing
               decoration: const InputDecoration(
-                label: Text("Phone Number"),
+                labelText: "Phone Number",
               ),
-              onChanged: (val) {
-                userNumber = val;
-              },
             ),
             TextField(
               decoration: const InputDecoration(
                 label: Text("Enter Item Price"),
               ),
+              keyboardType: TextInputType.number,
               onChanged: (val) {
                 itemPrice = val;
               },
@@ -161,6 +179,16 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                 description = val;
               },
             ),
+          /*  TextField(
+              decoration: const InputDecoration(
+                label: Text("Youtube Link [Optional]"),
+              ),
+              onChanged: (val) {
+                youtubeLink = val;
+                bool isLinkValid = isYouTubeLink(youtubeLink);
+
+              },
+            ),*/
             TextField(
               decoration: const InputDecoration(
                 label: Text("Address"),
@@ -175,9 +203,10 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
             const SizedBox(
               height: 10.0,
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
               child: ElevatedButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue)),
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -186,13 +215,14 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                       });
                   uploadFile().whenComplete(() {
                     Map<String, dynamic> adData = {
-                      'userName': this.userName,
+                      'userName': userName,
                       'uid': auth.currentUser?.uid,
-                      'userNumber': this.userNumber,
-                      'itemPrice': this.itemPrice,
-                      'itemModel': this.itemModel,
-                      'itemColor': this.itemColor,
-                      'description': this.description,
+                      'userNumber': userNumber,
+                      'itemPrice': itemPrice,
+                      'itemModel': itemModel,
+                      'itemColor': itemColor,
+                      'description': description,
+                     // 'link':youtubeLink,
                       'urlImage1': urlsList[0].toString(),
                       'urlImage2': urlsList[1].toString(),
                       'urlImage3': urlsList[2].toString(),
@@ -209,7 +239,9 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                         .collection('items')
                         .add(adData)
                         .then((value) {
-                      print("Data Added Successfuly");
+                      if (kDebugMode) {
+                        print("Data Added Successfully");
+                      }
                       ScaffoldMessenger.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
@@ -219,7 +251,8 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                             backgroundColor: Colors.transparent,
                             content: AwesomeSnackbarContent(
                               title: 'Successful!',
-                              message: "Ad Uploaded Successfully!\nPlease wait upto 24hrs for your ad to get verified!",
+                              message:
+                                  "Ad Uploaded Successfully!\nPlease wait upto 24hrs for your ad to get verified!",
                               contentType: ContentType.success,
                             ),
                           ),
@@ -227,9 +260,11 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HomeScreen()));
+                              builder: (context) => const HomeScreen(),),);
                     }).catchError((onError) {
-                      print(onError);
+                      if (kDebugMode) {
+                        print(onError);
+                      }
                       ScaffoldMessenger.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
@@ -318,11 +353,9 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          child: const Text(
-                            "Uploading....",
-                            style: TextStyle(fontSize: 20),
-                          ),
+                        const Text(
+                          "Uploading....",
+                          style: TextStyle(fontSize: 20),
                         ),
                         const SizedBox(
                           height: 10,
@@ -338,9 +371,10 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                 : Container()
           ],
         ),
-        Expanded(child: SizedBox(),),
+        const Expanded(
+          child: SizedBox(),
+        ),
         BannerAdWidget(), // Top banner ad
-
       ],
     );
   }
@@ -383,12 +417,77 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
     ));
   }
 
-  chooseImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      _image.add(File(pickedFile!.path));
-    });
-    if (pickedFile?.path == null) retrieveLostData();
+  Future<void> chooseImage() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Choose Image Source'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: const Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: Icon(Icons.camera),
+                      ),
+                      Text('Camera'),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    captureImage();
+                  },
+                ),
+                const Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: const Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: Icon(Icons.image),
+                      ),
+                      Text('Gallery'),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    pickImage(ImageSource.gallery);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFiles = await picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.length <= 5) {
+      setState(() {
+        _image.addAll(pickedFiles.map((pickedFile) => File(pickedFile.path)));
+      });
+    } else if (pickedFiles.length > 5) {
+      const AlertDialog(
+        title: Text('Please select 5 images only'),
+      );
+    }
+  }
+
+  Future<void> captureImage() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _image.add(File(pickedFile.path));
+      });
+    }
   }
 
   Future<void> retrieveLostData() async {
@@ -416,5 +515,12 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
   void initState() {
     super.initState();
     imageRef = FirebaseFirestore.instance.collection('imageUrls');
+    getMyData();
+  }
+
+  bool isYouTubeLink(String? youtubeLink) {
+    RegExp youtubePattern = RegExp(
+        r"^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})");
+    return youtubePattern.hasMatch(youtubeLink!);
   }
 }

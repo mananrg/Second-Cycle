@@ -70,20 +70,20 @@
 41-->[com.google.android.gms:play-services-measurement:21.2.2] /Users/manangandhi/.gradle/caches/transforms-3/6ca852eb62018ce2e824bd069a4a9f1f/transformed/jetified-play-services-measurement-21.2.2/AndroidManifest.xml:26:22-107
 42
 43    <permission
-43-->[androidx.core:core:1.9.0] /Users/manangandhi/.gradle/caches/transforms-3/c8415123c78154afbc28c5658e7ea550/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+43-->[androidx.core:core:1.10.1] /Users/manangandhi/.gradle/caches/transforms-3/97d8b8203f364ef259953db950f20e6f/transformed/core-1.10.1/AndroidManifest.xml:22:5-24:47
 44        android:name="com.example.resell_app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-44-->[androidx.core:core:1.9.0] /Users/manangandhi/.gradle/caches/transforms-3/c8415123c78154afbc28c5658e7ea550/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+44-->[androidx.core:core:1.10.1] /Users/manangandhi/.gradle/caches/transforms-3/97d8b8203f364ef259953db950f20e6f/transformed/core-1.10.1/AndroidManifest.xml:23:9-81
 45        android:protectionLevel="signature" />
-45-->[androidx.core:core:1.9.0] /Users/manangandhi/.gradle/caches/transforms-3/c8415123c78154afbc28c5658e7ea550/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+45-->[androidx.core:core:1.10.1] /Users/manangandhi/.gradle/caches/transforms-3/97d8b8203f364ef259953db950f20e6f/transformed/core-1.10.1/AndroidManifest.xml:24:9-44
 46
 47    <uses-permission android:name="com.example.resell_app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-47-->[androidx.core:core:1.9.0] /Users/manangandhi/.gradle/caches/transforms-3/c8415123c78154afbc28c5658e7ea550/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
-47-->[androidx.core:core:1.9.0] /Users/manangandhi/.gradle/caches/transforms-3/c8415123c78154afbc28c5658e7ea550/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+47-->[androidx.core:core:1.10.1] /Users/manangandhi/.gradle/caches/transforms-3/97d8b8203f364ef259953db950f20e6f/transformed/core-1.10.1/AndroidManifest.xml:26:5-97
+47-->[androidx.core:core:1.10.1] /Users/manangandhi/.gradle/caches/transforms-3/97d8b8203f364ef259953db950f20e6f/transformed/core-1.10.1/AndroidManifest.xml:26:22-94
 48
 49    <application
 50        android:name="android.app.Application"
 51        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-51-->[androidx.core:core:1.9.0] /Users/manangandhi/.gradle/caches/transforms-3/c8415123c78154afbc28c5658e7ea550/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+51-->[androidx.core:core:1.10.1] /Users/manangandhi/.gradle/caches/transforms-3/97d8b8203f364ef259953db950f20e6f/transformed/core-1.10.1/AndroidManifest.xml:28:18-86
 52        android:debuggable="true"
 53        android:icon="@mipmap/launcher_icon"
 54        android:label="resell_app" >

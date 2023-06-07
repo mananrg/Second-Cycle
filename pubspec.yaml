@@ -53,7 +53,9 @@ dependencies:
   maps_launcher:
   cached_network_image:
   whatsapp_unilink:
+  video_player:
   google_mobile_ads:
+  flutter_map: ^0.14.0
 
 dev_dependencies:
   flutter_test:

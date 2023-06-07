@@ -14,7 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 class SignupBody extends StatefulWidget {
-  const SignupBody({super.key});
+  const SignupBody({Key? key}) : super(key: key);
   static String verify = "";
 
   @override
@@ -43,45 +43,85 @@ class _SignupBodyState extends State<SignupBody> {
 
   void _register() async {
     User? currentUser; // Change the type to User? (nullable)
+    if (_lnameController.text.isNotEmpty &&
+        _lphoneController.text.length == 10 &&
+        _lconfirmpasswordController.text.isNotEmpty &&
+        isStrongPassword(_lconfirmpasswordController.text) &&
+        isValidEmail(_lemailController.text)) {
+      try {
+        final authResult = await _auth.createUserWithEmailAndPassword(
+          email: _lemailController.text.trim(),
+          password: _lconfirmpasswordController.text.trim(),
+        );
 
-    try {
-      final authResult = await _auth.createUserWithEmailAndPassword(
-        email: _lemailController.text.trim(),
-        password: _lconfirmpasswordController.text.trim(),
-      );
+        currentUser = authResult.user!;
+        userId = currentUser.uid!;
+        userEmail = currentUser.email!;
+        phoneNumber = _lphoneController.text.trim();
+        getUserName = _lnameController.text.trim();
 
-      currentUser = authResult.user!;
-      userId = currentUser.uid!;
-      userEmail = currentUser.email!;
-      phoneNumber = _lphoneController.text.trim();
-      getUserName = _lnameController.text.trim();
-      saveUserData();
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: countrycode + phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {},
-        verificationFailed: (FirebaseAuthException e) {},
-        codeSent: (String verificationId, int? resendToken) {
-          SignupBody.verify = verificationId;
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {},
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ),
-      );
-    } catch (error) {
-      Navigator.pop(context);
+        saveUserData();
+        await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: countrycode + phoneNumber,
+          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationFailed: (FirebaseAuthException e) {},
+          codeSent: (String verificationId, int? resendToken) {
+            SignupBody.verify = verificationId;
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {},
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
+      } catch (error) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (con) {
+            return ErrorAlertDialog(
+              message: error.toString(),
+            );
+          },
+        );
+      }
+    } else {
+      // Show a pop-up indicating the issues with the input
       showDialog(
         context: context,
-        builder: (con) {
-          return ErrorAlertDialog(
-            message: error.toString(),
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Input Error'),
+            content:
+                const Text('Please check your input fields and try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
           );
         },
       );
     }
+  }
+
+  bool isStrongPassword(String password) {
+    // Perform your strong password validation logic here
+    // Return true if the password is strong, false otherwise
+    // You can define your own criteria for a strong password
+    return password.length >= 8;
+  }
+
+  bool isValidEmail(String email) {
+    // Return true if the email is valid, false otherwise
+    final emailRegex =
+        r'^[\w-]+(\.[\w-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$';
+    return RegExp(emailRegex).hasMatch(email);
   }
 
   void _login() async {
@@ -121,8 +161,12 @@ class _SignupBodyState extends State<SignupBody> {
       'userNumber': _lphoneController.text.trim(),
       'email': _lemailController.text.trim(),
       'time': DateTime.now(),
-      'status': "approved"
+      'status': "approved",
+     // 'imgPro': _image ?? Image.asset("assets/images/person.jpg")
     };
+print("&"*20);
+print(_image);
+print("&"*20);
 
     FirebaseFirestore.instance.collection("users").doc(userId).set(userData);
   }
@@ -138,6 +182,7 @@ class _SignupBodyState extends State<SignupBody> {
     double screenWidth = MediaQuery.of(context).size.width,
         screenHeight = MediaQuery.of(context).size.height;
     Color blue = const Color(0xFF266AFE);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -149,14 +194,31 @@ class _SignupBodyState extends State<SignupBody> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Stack(
+                 buttonState? Container():Stack(
                     children: [
-                      CircleAvatar(
-                        radius: screenWidth * 0.08,
-                        backgroundColor: Colors.blueAccent,
-                        backgroundImage: _image == null
-                            ? Image.asset('assets/images/person.jpg').image
-                            : FileImage(_image!),
+                      GestureDetector(
+                        onTap: () async {
+                          final imagePicker = ImagePicker();
+                          final pickedImage = await imagePicker.getImage(
+                              source: ImageSource.camera);
+
+                          if (pickedImage != null) {
+                            setState(() {
+                              _image = File(pickedImage.path);
+                              print("*"*20);
+                              print(_image);
+                              print("*"*20);
+
+                            });
+                          }
+                        },
+                        child: CircleAvatar(
+                          radius: screenWidth * 0.08,
+                          backgroundColor: Colors.blueAccent,
+                          backgroundImage: _image == null
+                              ? Image.asset('assets/images/person.jpg').image
+                              : FileImage(_image!),
+                        ),
                       ),
                       Positioned(
                         bottom: 0,
@@ -187,7 +249,6 @@ class _SignupBodyState extends State<SignupBody> {
                         onPressed: () {
                           setState(() {
                             buttonState = true;
-                            buttonState = true;
                             if (kDebugMode) {
                               print(buttonState);
                             }
@@ -205,7 +266,7 @@ class _SignupBodyState extends State<SignupBody> {
                             ),
                           ),
                           child: Text(
-                            "Login",
+                            "LOGIN",
                             style: TextStyle(
                               color: buttonState
                                   ? const Color(0xFF266AFE)
@@ -219,7 +280,6 @@ class _SignupBodyState extends State<SignupBody> {
                       TextButton(
                         onPressed: () {
                           setState(() {
-                            buttonState = false;
                             buttonState = false;
                           });
                           if (kDebugMode) {
@@ -238,7 +298,7 @@ class _SignupBodyState extends State<SignupBody> {
                             ),
                           ),
                           child: Text(
-                            "SignUp",
+                            "SIGN UP",
                             style: TextStyle(
                               color: buttonState
                                   ? Colors.black45
@@ -318,6 +378,7 @@ class _SignupBodyState extends State<SignupBody> {
                               _passwordController.text = value;
                             },
                             cursorColor: blue,
+                            obscureText: visibilityState,
                             decoration: InputDecoration(
                               hintText: "Password",
                               suffixIcon: IconButton(
@@ -343,9 +404,6 @@ class _SignupBodyState extends State<SignupBody> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: screenHeight * 0.03,
-                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -362,7 +420,6 @@ class _SignupBodyState extends State<SignupBody> {
                             ),
                           ],
                         ),
-
                       ],
                     ),
                   )
@@ -414,6 +471,7 @@ class _SignupBodyState extends State<SignupBody> {
                               _lconfirmpasswordController.text = value;
                             },
                             cursorColor: blue,
+                            obscureText: visibilityState,
                             decoration: InputDecoration(
                               hintText: "Confirm Password",
                               suffixIcon: IconButton(
@@ -439,9 +497,8 @@ class _SignupBodyState extends State<SignupBody> {
                             ),
                           ),
                         ),
-
                         SizedBox(
-                          height: screenHeight * 0.03,
+                          height: screenHeight * 0.02,
                         ),
                         SizedBox(
                           height: screenHeight * 0.03,
@@ -475,9 +532,14 @@ class _SignupBodyState extends State<SignupBody> {
                     style: const TextStyle(color: Colors.grey),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        buttonState = !buttonState;
+                        print(buttonState);
+                      });
+                    },
                     child: Text(
-                      buttonState ? "Sign Up" : "Sign In",
+                      buttonState ? "Sign Up" : "Login",
                       style: const TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.bold,

@@ -22,12 +22,15 @@ class MyDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             child: Container(
-              child: CircleAvatar(
-                  backgroundColor: Colors.blueAccent,
-                  backgroundImage: Image.asset(
-                    'assets/images/person.jpg',
-                    fit: BoxFit.fitHeight,
-                  ).image),
+              height: 400,
+              child:        Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Hey $getUserName"),
+                ],
+              ),
+
             ),
           ),
           ListTile(

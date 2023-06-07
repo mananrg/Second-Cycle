@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -30,8 +32,20 @@ class _HomeScreenState extends State<HomeScreen> {
   QuerySnapshot? items;
   late BannerAd bannerAd;
   bool isAdLoaded = false;
-  var adUnitId = "ca-app-pub-3940256099942544/6300978111";
+  late var adUnitId;
+  String docId='';
   initBannerAd() {
+    if (Platform.isAndroid) {
+      adUnitId = "ca-app-pub-3940256099942544/6300978111";
+      print("*" * 100);
+      print("its android");
+      print("*" * 100);
+    } else if (Platform.isIOS) {
+      adUnitId = "ca-app-pub-3940256099942544/2934735716";
+      print("*" * 100);
+      print("its apple");
+      print("*" * 100);
+    }
     bannerAd = BannerAd(
       size: AdSize.banner,
       adUnitId: adUnitId,
@@ -96,6 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getUserAddress() async {
+    if (!mounted) return;
+
     Position newPosition = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -131,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     getMyData();
     initBannerAd();
-    getUserAddress();
+    requestLocationPermission();
   }
 
   @override
@@ -187,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.orange,
                           child: SizedBox(
                             width: _screenWidth * 0.45,
-                            height: _screenWidth * 0.45,
+                            height: 100,
                             child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -220,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.blue,
                         child: SizedBox(
                           width: _screenWidth * 0.45,
-                          height: _screenWidth * 0.45,
+                          height: 100,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -248,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-            /*  isAdLoaded
+              /*  isAdLoaded
                   ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -302,6 +318,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 items?.docs[i].get('itemColor'),
                                             userNumber: items?.docs[i]
                                                 .get('userNumber'),
+                                            itemPrice:
+                                                items?.docs[i].get('itemPrice'),
+                                            userName:
+                                                items?.docs[i].get('userName'),
                                             description: items?.docs[i]
                                                 .get('description'),
                                             lat: items?.docs[i].get('lat'),
@@ -361,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: const EdgeInsets.only(left: 2.0),
                                     child: Text(
                                       "${items?.docs[i].get("itemModel")}"
-                                          .toUpperCase(),
+                                          .toUpperCase(),style: const TextStyle(fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   Padding(
@@ -396,5 +416,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  String getCurrentDocId(int index) {
+    return items?.docs[index].id ?? '';
   }
 }
