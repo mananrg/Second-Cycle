@@ -1,14 +1,23 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:resell_app/SignupScreen/componets/body.dart';
 import 'package:resell_app/SignupScreen/signUpScreen.dart';
 
+import '../DialogBox/errorDialog.dart';
 import '../HomeScreen.dart';
+import '../globalVar.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({Key? key}) : super(key: key);
+  var phoneNumber;
+
+  var email;
+
+  var name;
+var password;
+   OtpScreen({Key? key,this.phoneNumber, this.email,this.name,this.password}) : super(key: key);
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -27,6 +36,100 @@ class _OtpScreenState extends State<OtpScreen> {
   void dispose() {
     _focusNode.unfocus();
     super.dispose();
+  }
+
+  void _register() async {
+    print("*"*100);
+    print("name: ${widget.name}");
+    print("phoneNumber: ${widget.phoneNumber}");
+    print("Email: ${widget.email}");
+    print("Password: ${widget.password}");
+
+    User? currentUser; // Change the type to User? (nullable)
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    if (widget.name.isNotEmpty &&
+        widget.phoneNumber.text.length == 10 &&
+      widget.password.isNotEmpty &&
+        isStrongPassword(widget.password) &&
+        isValidEmail(widget.email)) {
+      try {
+        final authResult = await _auth.createUserWithEmailAndPassword(
+          email: widget.email,
+          password: widget.password,
+        );
+
+        currentUser = authResult.user!;
+        userId = currentUser.uid!;
+        userEmail = currentUser.email!;
+        phoneNumber = widget.phoneNumber;
+        getUserName = widget.name;
+
+        saveUserData();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
+      } catch (error) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (con) {
+            return ErrorAlertDialog(
+              message: error.toString(),
+            );
+          },
+        );
+      }
+    } else {
+      // Show a pop-up indicating the issues with the input
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Input Error'),
+            content:
+            const Text('Please check your input fields and try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+  void saveUserData() {
+    Map<String, dynamic> userData = {
+      'userName': widget.name,
+      'uid': userId,
+      'userNumber':widget.phoneNumber,
+      'email': widget.email,
+      'time': DateTime.now(),
+      'status': "approved",
+      //'imgPro': _image ?? Image.asset("assets/images/person.jpg")
+    };
+
+    FirebaseFirestore.instance.collection("users").doc(userId).set(userData);
+  }
+  bool isStrongPassword(String password) {
+    // Perform your strong password validation logic here
+    // Return true if the password is strong, false otherwise
+    // You can define your own criteria for a strong password
+    return password.length >= 8;
+  }
+
+  bool isValidEmail(String email) {
+    // Return true if the email is valid, false otherwise
+    final emailRegex =
+        r'^[\w-]+(\.[\w-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$';
+    return RegExp(emailRegex).hasMatch(email);
   }
 
   @override
@@ -125,6 +228,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     onPressed: () async {
                       try {
+
                         PhoneAuthCredential credential =
                             PhoneAuthProvider.credential(
                                 verificationId: SignupBody.verify,
@@ -133,7 +237,9 @@ class _OtpScreenState extends State<OtpScreen> {
                         UserCredential authResult =
                             await auth.signInWithCredential(credential);
                         User? user = authResult.user;
-
+print("&"*1000);
+print(user);
+print("&"*1000);
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
@@ -156,15 +262,10 @@ class _OtpScreenState extends State<OtpScreen> {
                             ),
                           );
                         } else {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
-                            ),
-                          );
+                          _register();
                         }
                       } catch (e) {
-
+print(e);
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
@@ -174,7 +275,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               backgroundColor: Colors.white,
                               content: AwesomeSnackbarContent(
                                 title: 'Error',
-                                message:  'Error sending OTP please contact Metro Mobility',
+                                message:  '${e}',
                                 contentType: ContentType.failure,
                               ),
                             ),

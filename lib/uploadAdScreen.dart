@@ -55,9 +55,19 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
       setState(() {
         getUserName = results.data()?['userName'];
         getUserNumber = results.data()?['userNumber'];
+        userNumber = getUserNumber;
+        userName = getUserName;
         if (kDebugMode) {
+          print("&" * 100);
+          print(userName);
+          print(userNumber);
+          print("&" * 100);
+        }
+        if (kDebugMode) {
+          print("Hello");
           print("*" * 10);
           print(getUserNumber);
+          print(getUserName);
           print("*" * 10);
         }
       });
@@ -132,20 +142,30 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller:
-                  TextEditingController(text: getUserName.toUpperCase()),
-              enabled: false, // Disable editing
+            /*     TextField(
               decoration: const InputDecoration(
-                labelText: "Name",
+                label: Text("Enter User Name"),
               ),
+              onChanged: (val) {
+                userName = val;
+              },
             ),
             TextField(
-              controller: TextEditingController(text: getUserNumber),
-              enabled: false, // Disable editing
               decoration: const InputDecoration(
-                labelText: "Phone Number",
+                label: Text("Enter User Number"),
               ),
+              keyboardType: TextInputType.number,
+              onChanged: (val) {
+                userNumber = val;
+              },
+            ),*/
+            TextField(
+              decoration: const InputDecoration(
+                label: Text("Enter Item Name"),
+              ),
+              onChanged: (val) {
+                itemModel = val;
+              },
             ),
             TextField(
               decoration: const InputDecoration(
@@ -154,14 +174,6 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
               keyboardType: TextInputType.number,
               onChanged: (val) {
                 itemPrice = val;
-              },
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                label: Text("Enter Item Name"),
-              ),
-              onChanged: (val) {
-                itemModel = val;
               },
             ),
             TextField(
@@ -230,7 +242,7 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                       'urlImage3': urlsList[2].toString(),
                       'urlImage4': urlsList[3].toString(),
                       'urlImage5': urlsList[4].toString(),
-                      'imgPro': userImageUrl,
+                      // 'imgPro': userImageUrl,
                       'lat': position?.latitude,
                       'lng': position?.longitude,
                       'address': completeAddress,
@@ -514,7 +526,6 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
     });
     _deleteImageController.add(index);
   }
-
 
   @override
   void initState() {

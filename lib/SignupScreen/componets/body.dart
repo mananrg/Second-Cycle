@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pinput/pinput.dart';
 import 'package:resell_app/DialogBox/errorDialog.dart';
 import 'package:resell_app/SignupScreen/otpScreen.dart';
 import 'package:resell_app/Widgets/rounded_button.dart';
@@ -57,8 +59,11 @@ class _SignupBodyState extends State<SignupBody> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => const OtpScreen(
-
+        builder: (BuildContext context) => OtpScreen(
+          name: _lnameController.text.trim(),
+          phoneNumber: countrycode + _lphoneController.text.trim(),
+          email: _lemailController.text.trim(),
+          password: _lconfirmpasswordController.text.trim(),
         ),
       ),
     );
@@ -71,6 +76,12 @@ class _SignupBodyState extends State<SignupBody> {
         _lconfirmpasswordController.text.isNotEmpty &&
         isStrongPassword(_lconfirmpasswordController.text) &&
         isValidEmail(_lemailController.text)) {
+      print("*" * 100);
+      print("inside register");
+      print(_lphoneController.text.length);
+      print(_lnameController.text.length);
+      print("*" * 100);
+
       try {
         final authResult = await _auth.createUserWithEmailAndPassword(
           email: _lemailController.text.trim(),
@@ -169,6 +180,12 @@ class _SignupBodyState extends State<SignupBody> {
   }
 
   void saveUserData() {
+    print("*" * 100);
+    print("inside save user data");
+    print(_lphoneController.text.length);
+    print(_lnameController.text.length);
+    print("*" * 100);
+
     Map<String, dynamic> userData = {
       'userName': _lnameController.text.trim(),
       'uid': userId,
@@ -507,8 +524,29 @@ class _SignupBodyState extends State<SignupBody> {
                 RoundedButton(
                     text: buttonState ? "LOGIN" : "SIGNUP",
                     press: () {
-                      buttonState ? _login() :_sendOtp();
-                      //  _register();
+                      buttonState
+                          ? _login()
+                          : //_register();//_sendOtp();
+                          AlertDialog(
+                              title: const Text('Enter OTP'),
+                              actions: [
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      child: const Text('Back'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                      },
+                                      child: const Text('Submit'),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            );
                     }),
               ],
             ),
