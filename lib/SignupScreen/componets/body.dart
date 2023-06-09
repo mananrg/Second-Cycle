@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resell_app/DialogBox/errorDialog.dart';
+import 'package:resell_app/SignupScreen/otpScreen.dart';
 import 'package:resell_app/Widgets/rounded_button.dart';
 import 'package:resell_app/Widgets/rounded_input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,11 +36,33 @@ class _SignupBodyState extends State<SignupBody> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String countrycode = '+1';
 
   var visibilityState = false;
+
+  void _sendOtp() async {
+    print("*" * 100);
+    print(countrycode + _lphoneController.text.trim());
+    print("*" * 100);
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: countrycode + _lphoneController.text.trim(),
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {},
+      codeSent: (String verificationId, int? resendToken) {
+        SignupBody.verify = verificationId;
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => const OtpScreen(
+
+        ),
+      ),
+    );
+  }
 
   void _register() async {
     User? currentUser; // Change the type to User? (nullable)
@@ -57,19 +80,10 @@ class _SignupBodyState extends State<SignupBody> {
         currentUser = authResult.user!;
         userId = currentUser.uid!;
         userEmail = currentUser.email!;
-        phoneNumber = _lphoneController.text.trim();
+        phoneNumber = countrycode + _lphoneController.text.trim();
         getUserName = _lnameController.text.trim();
 
         saveUserData();
-        await FirebaseAuth.instance.verifyPhoneNumber(
-          phoneNumber: countrycode + phoneNumber,
-          verificationCompleted: (PhoneAuthCredential credential) {},
-          verificationFailed: (FirebaseAuthException e) {},
-          codeSent: (String verificationId, int? resendToken) {
-            SignupBody.verify = verificationId;
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {},
-        );
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -158,15 +172,12 @@ class _SignupBodyState extends State<SignupBody> {
     Map<String, dynamic> userData = {
       'userName': _lnameController.text.trim(),
       'uid': userId,
-      'userNumber': _lphoneController.text.trim(),
+      'userNumber': countrycode + _lphoneController.text.trim(),
       'email': _lemailController.text.trim(),
       'time': DateTime.now(),
       'status': "approved",
-     // 'imgPro': _image ?? Image.asset("assets/images/person.jpg")
+      //'imgPro': _image ?? Image.asset("assets/images/person.jpg")
     };
-print("&"*20);
-print(_image);
-print("&"*20);
 
     FirebaseFirestore.instance.collection("users").doc(userId).set(userData);
   }
@@ -194,33 +205,17 @@ print("&"*20);
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                 buttonState? Container():Stack(
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          final imagePicker = ImagePicker();
-                          final pickedImage = await imagePicker.getImage(
-                              source: ImageSource.camera);
-
-                          if (pickedImage != null) {
-                            setState(() {
-                              _image = File(pickedImage.path);
-                              print("*"*20);
-                              print(_image);
-                              print("*"*20);
-
-                            });
-                          }
-                        },
-                        child: CircleAvatar(
-                          radius: screenWidth * 0.08,
-                          backgroundColor: Colors.blueAccent,
-                          backgroundImage: _image == null
-                              ? Image.asset('assets/images/person.jpg').image
-                              : FileImage(_image!),
-                        ),
-                      ),
-                      Positioned(
+                  buttonState
+                      ? Container()
+                      : Stack(
+                          children: [
+                            CircleAvatar(
+                                radius: screenWidth * 0.08,
+                                backgroundColor: Colors.blueAccent,
+                                backgroundImage:
+                                    Image.asset('assets/images/person.jpg')
+                                        .image),
+                            /* Positioned(
                         bottom: 0,
                         right: 0,
                         child: _image == null
@@ -240,9 +235,9 @@ print("&"*20);
                                 ),
                               )
                             : Container(),
-                      ),
-                    ],
-                  ),
+                      ),*/
+                          ],
+                        ),
                   Row(
                     children: [
                       TextButton(
@@ -512,7 +507,8 @@ print("&"*20);
                 RoundedButton(
                     text: buttonState ? "LOGIN" : "SIGNUP",
                     press: () {
-                      buttonState ? _login() : _register();
+                      buttonState ? _login() :_sendOtp();
+                      //  _register();
                     }),
               ],
             ),

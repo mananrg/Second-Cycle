@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.resell_app-mergeDebugResources-35:/values-sk/values-sk.xml",
+            "outputFile": "com.example.resell_app-mergeDebugResources-36:/values-sk/values-sk.xml",
             "map": [
                 {
                     "source": "/Users/manangandhi/.gradle/caches/transforms-3/dec0215e2a01b18320e1a4c2c05cba75/transformed/jetified-play-services-ads-22.0.0/res/values-sk/values.xml",

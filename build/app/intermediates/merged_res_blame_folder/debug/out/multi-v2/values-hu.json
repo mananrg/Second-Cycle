@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.resell_app-mergeDebugResources-35:/values-hu/values-hu.xml",
+            "outputFile": "com.example.resell_app-mergeDebugResources-36:/values-hu/values-hu.xml",
             "map": [
                 {
                     "source": "/Users/manangandhi/.gradle/caches/transforms-3/dcd235afd9a06ac311aec5c2109f60be/transformed/appcompat-1.2.0/res/values-hu/values-hu.xml",

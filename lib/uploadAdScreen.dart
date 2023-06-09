@@ -45,7 +45,7 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
   String itemModel = "";
   String itemColor = "";
   String description = "";
-String? youtubeLink="";
+  String? youtubeLink = "";
   getMyData() {
     FirebaseFirestore.instance
         .collection('users')
@@ -60,7 +60,6 @@ String? youtubeLink="";
           print(getUserNumber);
           print("*" * 10);
         }
-
       });
     });
   }
@@ -69,8 +68,10 @@ String? youtubeLink="";
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton( icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: next
             ? const Text("Enter Appropriate Info")
             : const Row(
@@ -179,7 +180,7 @@ String? youtubeLink="";
                 description = val;
               },
             ),
-          /*  TextField(
+            /*  TextField(
               decoration: const InputDecoration(
                 label: Text("Youtube Link [Optional]"),
               ),
@@ -206,7 +207,8 @@ String? youtubeLink="";
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
               child: ElevatedButton(
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -222,7 +224,7 @@ String? youtubeLink="";
                       'itemModel': itemModel,
                       'itemColor': itemColor,
                       'description': description,
-                     // 'link':youtubeLink,
+                      // 'link':youtubeLink,
                       'urlImage1': urlsList[0].toString(),
                       'urlImage2': urlsList[1].toString(),
                       'urlImage3': urlsList[2].toString(),
@@ -258,9 +260,11 @@ String? youtubeLink="";
                           ),
                         );
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),),);
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
                     }).catchError((onError) {
                       if (kDebugMode) {
                         print(onError);
@@ -510,6 +514,7 @@ String? youtubeLink="";
     });
     _deleteImageController.add(index);
   }
+
 
   @override
   void initState() {

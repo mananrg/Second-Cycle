@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.resell_app-mergeDebugResources-35:/values-zh-rHK/values-zh-rHK.xml",
+            "outputFile": "com.example.resell_app-mergeDebugResources-36:/values-zh-rHK/values-zh-rHK.xml",
             "map": [
                 {
                     "source": "/Users/manangandhi/.gradle/caches/transforms-3/24fbad903c38f929c4610eba4dedbee4/transformed/jetified-exoplayer-core-2.18.7/res/values-zh-rHK/values-zh-rHK.xml",
