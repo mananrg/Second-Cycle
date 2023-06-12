@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pinput/pinput.dart';
 import 'package:resell_app/DialogBox/errorDialog.dart';
-import 'package:resell_app/SignupScreen/otpScreen.dart';
 import 'package:resell_app/Widgets/rounded_button.dart';
 import 'package:resell_app/Widgets/rounded_input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +25,6 @@ class SignupBody extends StatefulWidget {
 
 class _SignupBodyState extends State<SignupBody> {
   String userPhotoUrl = "";
-
   File? _image;
   final picker = ImagePicker();
   var buttonState = true;
@@ -35,53 +33,98 @@ class _SignupBodyState extends State<SignupBody> {
   final TextEditingController _lphoneController = TextEditingController();
   final TextEditingController _lconfirmpasswordController =
       TextEditingController();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String countrycode = '+1';
-
+  final _focusNode = FocusNode();
   var visibilityState = false;
 
-  void _sendOtp() async {
-    print("*" * 100);
-    print(countrycode + _lphoneController.text.trim());
-    print("*" * 100);
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: countrycode + _lphoneController.text.trim(),
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int? resendToken) {
-        SignupBody.verify = verificationId;
+  Future<void> sendOTP(String phoneNumber) async {
+    showDialog(
+      context: context,
+
+      builder: (BuildContext context) {
+        return Theme(
+          data:  Theme.of(context).copyWith(primaryColor: Colors.white,dialogBackgroundColor: Colors.grey),
+          child: Center(
+            child: SizedBox(
+              height: 300,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+
+                child: AlertDialog(
+
+                  title: const Text("Enter OTP",style: TextStyle(fontWeight: FontWeight.bold),),
+                  content: Pinput(
+                    focusNode: _focusNode,
+                    length: 6,
+                   // defaultPinTheme: defaultPinTheme,
+                  //  focusedPinTheme: focusedPinTheme,
+                    // submittedPinTheme: submittedPinTheme,
+
+                    showCursor: true,
+                    onCompleted: (pin) {
+                      print(pin);
+                    },
+                  ),
+                  actions: [
+                    Row(
+                      mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+
+                          },
+                          child: const Text("Submit"),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
       },
-      codeAutoRetrievalTimeout: (String verificationId) {},
     );
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => OtpScreen(
-          name: _lnameController.text.trim(),
-          phoneNumber: countrycode + _lphoneController.text.trim(),
-          email: _lemailController.text.trim(),
-          password: _lconfirmpasswordController.text.trim(),
-        ),
-      ),
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // This callback will be triggered automatically for iOS devices that support
+        // automatic verification. You can use the credential to sign in the user.
+        // For Android devices, this callback will not be triggered automatically
+        // and you need to manually handle the verification flow.
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        // Handle verification failure, e.g., display an error message.
+        if (kDebugMode) {
+          print('Verification failed: $e');
+        }
+      },
+      codeSent: (String verificationId, [int? resendToken]) {
+        // Store the verification ID and show the OTP input UI to the user.
+        // You can send the verification ID to the next screen to complete the verification process.
+        print('Verification ID: $verificationId');
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        // Called when the automatic code retrieval timeout has expired.
+        // You can handle this event if needed, or ignore it in most cases.
+      },
     );
   }
 
   void _register() async {
     User? currentUser; // Change the type to User? (nullable)
     if (_lnameController.text.isNotEmpty &&
-        _lphoneController.text.length == 10 &&
         _lconfirmpasswordController.text.isNotEmpty &&
         isStrongPassword(_lconfirmpasswordController.text) &&
         isValidEmail(_lemailController.text)) {
-      print("*" * 100);
-      print("inside register");
-      print(_lphoneController.text.length);
-      print(_lnameController.text.length);
-      print("*" * 100);
-
       try {
         final authResult = await _auth.createUserWithEmailAndPassword(
           email: _lemailController.text.trim(),
@@ -91,10 +134,19 @@ class _SignupBodyState extends State<SignupBody> {
         currentUser = authResult.user!;
         userId = currentUser.uid!;
         userEmail = currentUser.email!;
-        phoneNumber = countrycode + _lphoneController.text.trim();
+        phoneNumber = _lphoneController.text.trim();
         getUserName = _lnameController.text.trim();
 
         saveUserData();
+        /*await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber:  phoneNumber,
+          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationFailed: (FirebaseAuthException e) {},
+          codeSent: (String verificationId, int? resendToken) {
+            SignupBody.verify = verificationId;
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {},
+        );*/
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -144,7 +196,7 @@ class _SignupBodyState extends State<SignupBody> {
 
   bool isValidEmail(String email) {
     // Return true if the email is valid, false otherwise
-    final emailRegex =
+    const emailRegex =
         r'^[\w-]+(\.[\w-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$';
     return RegExp(emailRegex).hasMatch(email);
   }
@@ -180,20 +232,14 @@ class _SignupBodyState extends State<SignupBody> {
   }
 
   void saveUserData() {
-    print("*" * 100);
-    print("inside save user data");
-    print(_lphoneController.text.length);
-    print(_lnameController.text.length);
-    print("*" * 100);
-
     Map<String, dynamic> userData = {
       'userName': _lnameController.text.trim(),
       'uid': userId,
-      'userNumber': countrycode + _lphoneController.text.trim(),
+      'userNumber': _lphoneController.text.trim(),
       'email': _lemailController.text.trim(),
       'time': DateTime.now(),
       'status': "approved",
-      //'imgPro': _image ?? Image.asset("assets/images/person.jpg")
+      // 'imgPro': _image ?? Image.asset("assets/images/person.jpg")
     };
 
     FirebaseFirestore.instance.collection("users").doc(userId).set(userData);
@@ -203,6 +249,7 @@ class _SignupBodyState extends State<SignupBody> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _focusNode.requestFocus();
   }
 
   @override
@@ -210,7 +257,30 @@ class _SignupBodyState extends State<SignupBody> {
     double screenWidth = MediaQuery.of(context).size.width,
         screenHeight = MediaQuery.of(context).size.height;
     Color blue = const Color(0xFF266AFE);
+    final defaultPinTheme = PinTheme(
+      width: 56,
+      height: 56,
+      textStyle: const TextStyle(
+          fontSize: 20,
+          color: Color.fromRGBO(30, 60, 87, 1),
+          fontWeight: FontWeight.w600),
+      decoration: BoxDecoration(
+        color: Colors.white70,
+        border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
+        borderRadius: BorderRadius.circular(20),
+      ),
+    );
 
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      border: Border.all(color: const Color.fromRGBO(114, 178, 238, 1)),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final submittedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration?.copyWith(
+        color: const Color.fromRGBO(234, 239, 243, 1),
+      ),
+    );
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -226,33 +296,51 @@ class _SignupBodyState extends State<SignupBody> {
                       ? Container()
                       : Stack(
                           children: [
-                            CircleAvatar(
+                            GestureDetector(
+                              onTap: () async {
+                                final imagePicker = ImagePicker();
+                                final pickedImage = await imagePicker.getImage(
+                                    source: ImageSource.camera);
+
+                                if (pickedImage != null) {
+                                  setState(() {
+                                    _image = File(pickedImage.path);
+                                    print("*" * 20);
+                                    print(_image);
+                                    print("*" * 20);
+                                  });
+                                }
+                              },
+                              child: CircleAvatar(
                                 radius: screenWidth * 0.08,
                                 backgroundColor: Colors.blueAccent,
-                                backgroundImage:
-                                    Image.asset('assets/images/person.jpg')
-                                        .image),
-                            /* Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: _image == null
-                            ? Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: Icon(
-                                  Icons.add,
-                                  size: screenWidth * 0.05,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Container(),
-                      ),*/
+                                backgroundImage: _image == null
+                                    ? Image.asset('assets/images/person.jpg')
+                                        .image
+                                    : FileImage(_image!),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: _image == null
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey,
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: screenWidth * 0.05,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Container(),
+                            ),
                           ],
                         ),
                   Row(
@@ -457,25 +545,43 @@ class _SignupBodyState extends State<SignupBody> {
                           },
                         ),
                         SizedBox(height: screenHeight * 0.02),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: TextField(
-                            onChanged: (value) {
-                              _lphoneController.text = value;
-                            },
-                            cursorColor: blue,
-                            decoration: const InputDecoration(
-                              hintText: "Phone",
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  width: 2, //<-- SEE HERE
-                                  color: Colors.black45,
-                                ),
+                        IntlPhoneField(
+                          decoration: const InputDecoration(
+                            hintText: "Enter Whatsapp Number",
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2, //<-- SEE HERE
+                                color: Colors.grey,
                               ),
                             ),
                           ),
+                          initialCountryCode: 'US',
+                          onChanged: (value) {
+                            if (kDebugMode) {
+                              print(value.completeNumber);
+                            }
+                            _lphoneController.text =
+                                value.completeNumber.toString();
+                          },
                         ),
-                        SizedBox(height: screenHeight * 0.02),
+                        /*  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      onChanged: (value) {
+                        _lphoneController.text = value;
+                      },
+                      cursorColor: blue,
+                      decoration: const InputDecoration(
+                        hintText: "Phone",
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2, //<-- SEE HERE
+                            color: Colors.black45,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),*/
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: TextField(
@@ -522,32 +628,14 @@ class _SignupBodyState extends State<SignupBody> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RoundedButton(
-                    text: buttonState ? "LOGIN" : "SIGNUP",
-                    press: () {
-                      buttonState
-                          ? _login()
-                          : //_register();//_sendOtp();
-                          AlertDialog(
-                              title: const Text('Enter OTP'),
-                              actions: [
-                                Row(
-                                  children: [
-                                    TextButton(
-                                      child: const Text('Back'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                      },
-                                      child: const Text('Submit'),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            );
-                    }),
+                  text: buttonState ? "LOGIN" : "SIGNUP",
+                  press: () {
+                    buttonState
+                        ? _login()
+                        :  _register();
+                     //   sendOTP(_lphoneController.text.trim());
+                  },
+                ),
               ],
             ),
             const Expanded(
