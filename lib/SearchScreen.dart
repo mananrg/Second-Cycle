@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'HomeScreen.dart';
 import 'globalVar.dart';
-import 'imageSlider.dart';
+import 'AdDescription.dart';
 import 'package:timeago/timeago.dart' as tAgo;
 
 class SearchScreen extends StatefulWidget {
@@ -138,8 +138,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             userName: items?.docs[i]
                                 .get('userName'),
                             description: items?.docs[i].get('description'),
-                            lat: items?.docs[i].get('lat'),
-                            lng: items?.docs[i].get('lng'),
+                            sellerLat: items?.docs[i].get('lat'),
+                            sellerLng: items?.docs[i].get('lng'),
                             address: items?.docs[i].get('address'),
                             urlImage1: items?.docs[i].get('urlImage1'),
                             urlImage2: items?.docs[i].get('urlImage2'),

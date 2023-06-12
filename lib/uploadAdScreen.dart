@@ -4,18 +4,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:resell_app/DialogBox/loadingDialog.dart';
 import 'package:resell_app/globalVar.dart';
 import 'package:path/path.dart' as Path;
-import 'BannerAd.dart';
+import 'GoogleAds/BannerAd.dart';
 import 'HomeScreen.dart';
 
 class UploadAdScreen extends StatefulWidget {
-  const UploadAdScreen({Key? key}) : super(key: key);
+  UploadAdScreen({
+    Key? key,
 
+  }) : super(key: key);
   @override
   State<UploadAdScreen> createState() => _UploadAdScreenState();
 }

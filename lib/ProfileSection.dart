@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:resell_app/HomeScreen.dart';
 import 'package:resell_app/globalVar.dart';
 import 'package:timeago/timeago.dart' as tAgo;
-import 'imageSlider.dart';
+import 'AdDescription.dart';
 
 class MyProfile extends StatefulWidget {
   MyProfile({Key? key, required this.sellerId}) : super(key: key);
@@ -261,8 +261,8 @@ class _MyProfileState extends State<MyProfile> {
 
                             userNumber: items?.docs[i].get('userNumber'),
                             description: items?.docs[i].get('description'),
-                            lat: items?.docs[i].get('lat'),
-                            lng: items?.docs[i].get('lng'),
+                            sellerLat: items?.docs[i].get('lat'),
+                            sellerLng: items?.docs[i].get('lng'),
                             address: items?.docs[i].get('address'),
                             urlImage1: items?.docs[i].get('urlImage1'),
                             urlImage2: items?.docs[i].get('urlImage2'),

@@ -11,13 +11,13 @@ import 'package:resell_app/globalVar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:resell_app/imageSlider.dart';
+import 'package:resell_app/AdDescription.dart';
 import 'package:resell_app/uploadAdScreen.dart';
 import 'package:timeago/timeago.dart' as tAgo;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'BannerAd.dart';
+import 'GoogleAds/BannerAd.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isAdLoaded = false;
   late var adUnitId;
   String docId='';
+  Position? viewerPosition;
   initBannerAd() {
     if (Platform.isAndroid) {
       adUnitId = "ca-app-pub-3940256099942544/6300978111";
@@ -116,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
       desiredAccuracy: LocationAccuracy.high,
     );
     position = newPosition;
+   // viewerPosition= newPosition;
     List<Placemark> placemarks = await placemarkFromCoordinates(
       newPosition.latitude,
       newPosition.longitude,
@@ -324,8 +326,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 items?.docs[i].get('userName'),
                                             description: items?.docs[i]
                                                 .get('description'),
-                                            lat: items?.docs[i].get('lat'),
-                                            lng: items?.docs[i].get('lng'),
+                                            sellerLat: items?.docs[i].get('lat'),
+                                            sellerLng: items?.docs[i].get('lng'),
                                             address:
                                                 items?.docs[i].get('address'),
                                             urlImage1:
@@ -409,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const UploadAdScreen(),
+              builder: (_) =>  UploadAdScreen(),
             ),
           );
         },
