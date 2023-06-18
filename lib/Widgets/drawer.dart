@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:resell_app/ProfileSection.dart';
+import 'package:resell_app/Profile/AllProfileAds.dart';
+import 'package:resell_app/Profile/EditProfile.dart';
 import 'package:resell_app/SignupScreen/componets/body.dart';
 import 'package:resell_app/globalVar.dart';
 
@@ -35,13 +36,26 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.person),
+            title: const Text('Edit Profile'),
+            onTap: () {
+              // Handle Home button tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => EditProfile(sellerId:userId),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.person),
             title: const Text('My Ads'),
             onTap: () {
               // Handle Home button tap
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) =>  MyProfile(sellerId:userId),
+                  builder: (BuildContext context) =>  MyAds(sellerId:userId),
                 ),
               );
             },

@@ -26,6 +26,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "auto_size_text",
+      "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/auto_size_text-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "awesome_snackbar_content",
       "rootUri": "file:///Users/manangandhi/.pub-cache/hosted/pub.dev/awesome_snackbar_content-0.1.1",
       "packageUri": "lib/",
@@ -213,7 +219,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/manangandhi/development/flutter/packages/flutter",
+      "rootUri": "file:///Users/manangandhi/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -261,13 +267,13 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///Users/manangandhi/development/flutter/packages/flutter_test",
+      "rootUri": "file:///Users/manangandhi/flutter/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///Users/manangandhi/development/flutter/packages/flutter_web_plugins",
+      "rootUri": "file:///Users/manangandhi/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -615,7 +621,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/manangandhi/development/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/manangandhi/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -884,7 +890,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-06-10T04:51:11.661690Z",
+  "generated": "2023-06-18T16:27:09.869030Z",
   "generator": "pub",
   "generatorVersion": "3.0.0"
 }

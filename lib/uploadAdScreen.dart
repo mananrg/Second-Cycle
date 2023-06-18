@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,9 +14,8 @@ import 'GoogleAds/BannerAd.dart';
 import 'HomeScreen.dart';
 
 class UploadAdScreen extends StatefulWidget {
-  UploadAdScreen({
+  const UploadAdScreen({
     Key? key,
-
   }) : super(key: key);
   @override
   State<UploadAdScreen> createState() => _UploadAdScreenState();
@@ -26,6 +24,9 @@ class UploadAdScreen extends StatefulWidget {
 class _UploadAdScreenState extends State<UploadAdScreen> {
   bool uploading = false, next = false;
   double val = 0;
+  bool returnEligible = false;
+  bool priceNeg = false;
+
   late CollectionReference imageRef;
   late firebase_storage.Reference ref;
   final StreamController<int> _deleteImageController =
@@ -82,21 +83,22 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: next
-            ? const Text("Enter Appropriate Info")
+            ? const Text("Advertisement")
             : const Row(
                 children: [
                   Text(
-                    "Choose the Image",
+                    "Select Image",
                     style: TextStyle(
                       fontSize: 18.0,
                     ),
                   ),
                 ],
               ),
+        centerTitle: true,
         actions: [
           next
               ? Container()
@@ -141,7 +143,7 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
   SingleChildScrollView userInfo(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -178,6 +180,63 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
               onChanged: (val) {
                 itemPrice = val;
               },
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Text("Price Negotiable"),
+                    Checkbox(
+                      value: priceNeg,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          priceNeg = value ?? false;
+                          print(priceNeg);
+                        });
+                      },
+                      checkColor: Colors.blue,
+                      activeColor: Colors.white ,
+                    ),
+
+
+
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text("Return Eligible"),
+                    Checkbox(
+                      value: returnEligible,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          returnEligible = value ?? false;
+                          print(returnEligible);
+                        });
+                      },
+                      checkColor: Colors.blue,
+                      activeColor: Colors.white ,
+                    ),
+
+                  ],
+                ),
+              ],
+            ),
+            Opacity(
+              opacity: 0.6,
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.yellow),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 8),
+                  child: Text(
+                      "If return eligible buyers get an option to return item within 24 hrs."),
+                ),
+              ),
             ),
             TextField(
               decoration: const InputDecoration(
@@ -216,9 +275,8 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                 completeAddress = val;
               },
             ),
-            const SizedBox(
-              height: 10.0,
-            ),
+
+            SizedBox(height: 20,),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
               child: ElevatedButton(
@@ -233,12 +291,17 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                   uploadFile().whenComplete(() {
                     Map<String, dynamic> adData = {
                       'userName': userName,
+                      'address': completeAddress,
                       'uid': auth.currentUser?.uid,
                       'userNumber': userNumber,
+                      'time': DateTime.now(),
+                      'status': "not approved",
                       'itemPrice': itemPrice,
                       'itemModel': itemModel,
                       'itemColor': itemColor,
                       'description': description,
+                      'returnEligible':returnEligible,
+                      'priceNegotiable':priceNeg,
                       // 'link':youtubeLink,
                       'urlImage1': urlsList[0].toString(),
                       'urlImage2': urlsList[1].toString(),
@@ -248,9 +311,6 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                       // 'imgPro': userImageUrl,
                       'lat': position?.latitude,
                       'lng': position?.longitude,
-                      'address': completeAddress,
-                      'time': DateTime.now(),
-                      'status': "not approved",
                     };
                     FirebaseFirestore.instance
                         .collection('items')

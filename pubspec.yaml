@@ -59,6 +59,8 @@ dependencies:
   latlong2:
   pinput:
   intl_phone_field:
+  auto_size_text:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

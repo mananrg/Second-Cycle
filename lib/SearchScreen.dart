@@ -146,6 +146,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             urlImage3: items?.docs[i].get('urlImage3'),
                             urlImage4: items?.docs[i].get('urlImage4'),
                             urlImage5: items?.docs[i].get('urlImage5'),
+                            time: items?.docs[i].get('time'),
+                            priceNegotiable:items?.docs[i].get('priceNegotiable'),
+                            returnEligible:items?.docs[i].get('returnEligible'),
                           ),
                         ),
                       );

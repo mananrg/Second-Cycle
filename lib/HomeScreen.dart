@@ -38,14 +38,20 @@ class _HomeScreenState extends State<HomeScreen> {
   initBannerAd() {
     if (Platform.isAndroid) {
       adUnitId = "ca-app-pub-3940256099942544/6300978111";
-      print("*" * 100);
-      print("its android");
-      print("*" * 100);
+      if (kDebugMode) {
+        print("*" * 100);
+        print("its android");
+        print("*" * 100);
+      }
+
     } else if (Platform.isIOS) {
       adUnitId = "ca-app-pub-3940256099942544/2934735716";
-      print("*" * 100);
-      print("its apple");
-      print("*" * 100);
+      if (kDebugMode) {
+        print("*" * 100);
+        print("its apple");
+        print("*" * 100);
+      }
+
     }
     bannerAd = BannerAd(
       size: AdSize.banner,
@@ -154,8 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _screenWidth = MediaQuery.of(context).size.width,
-        _screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -204,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Card(
                           color: Colors.orange,
                           child: SizedBox(
-                            width: _screenWidth * 0.45,
+                            width: screenWidth * 0.45,
                             height: 100,
                             child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -237,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Card(
                         color: Colors.blue,
                         child: SizedBox(
-                          width: _screenWidth * 0.45,
+                          width: screenWidth * 0.45,
                           height: 100,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -339,7 +344,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             urlImage4:
                                                 items?.docs[i].get('urlImage4'),
                                             urlImage5:
-                                                items?.docs[i].get('urlImage5'),
+                                                items?.docs[i].get('urlImage5'), time: items?.docs[i].get('time'),
+                                            priceNegotiable:items?.docs[i].get('priceNegotiable'),
+                                            returnEligible:items?.docs[i].get('returnEligible'),
                                           ),
                                         ),
                                       );
@@ -411,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) =>  UploadAdScreen(),
+              builder: (_) =>  const UploadAdScreen(),
             ),
           );
         },

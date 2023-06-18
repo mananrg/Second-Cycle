@@ -1,8 +1,12 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:resell_app/ProfileSection.dart';
+import 'package:resell_app/Profile/AllProfileAds.dart';
+import 'package:resell_app/Widgets/loadingWidget.dart';
 import 'package:resell_app/globalVar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
@@ -11,7 +15,7 @@ import 'package:latlong2/latlong.dart';
 import 'GoogleAds/BannerAd.dart';
 import 'package:video_player/video_player.dart';
 import 'package:geocoding/geocoding.dart';
-
+import 'package:timeago/timeago.dart' as tAgo;
 import 'Widgets/GetCurrentLocation.dart';
 
 class ImageSliderScreen extends StatefulWidget {
@@ -31,6 +35,9 @@ class ImageSliderScreen extends StatefulWidget {
     required this.urlImage4,
     required this.urlImage5,
     required this.userName,
+    required this.time,
+    required this.priceNegotiable,
+    required this.returnEligible,
     // required this.viewerPosition,
   }) : super(key: key);
 
@@ -41,8 +48,9 @@ class ImageSliderScreen extends StatefulWidget {
       address,
       itemPrice,
       userName;
+  final bool priceNegotiable, returnEligible;
   // Position? viewerPosition;
-
+  final Timestamp time;
   final String urlImage1, urlImage2, urlImage3, urlImage4, urlImage5;
   final double sellerLat, sellerLng;
   @override
@@ -86,10 +94,13 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
 
       // Use the latitude, longitude, and timestamp variables as needed
       // For example, you can print them or assign them to other variables
-      print("&" * 100);
-      print("Latitude: $viewerLatitude");
-      print("Longitude: $viewerLongitude");
-      print("&" * 100);
+      if (kDebugMode) {
+        print("&" * 100);
+        print("Latitude: $viewerLatitude");
+        print("Longitude: $viewerLongitude");
+        print("&" * 100);
+      }
+
       setState(() {
         distanceInMiles = Geolocator.distanceBetween(widget.sellerLat,
                 widget.sellerLng, viewerLatitude, viewerLongitude) *
@@ -168,163 +179,250 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BannerAdWidget(), // Top banner ad
-              Padding(
-                padding: const EdgeInsets.only(top: 20, left: 6.0, right: 12.0),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.location_pin,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(
-                      width: 4.0,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      child: Text(
-                        widget.address,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(letterSpacing: 2.0),
+      body: RefreshIndicator(
+        onRefresh: () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ImageSliderScreen(
+                title: widget.title,
+                itemColor: widget.itemColor,
+                userNumber: widget.userNumber,
+                description: widget.description,
+                itemPrice: widget.itemPrice,
+                sellerLat: widget.sellerLat,
+                sellerLng: widget.sellerLng,
+                address: widget.address,
+                urlImage1: widget.urlImage1,
+                urlImage2: widget.urlImage2,
+                urlImage3: widget.urlImage3,
+                urlImage4: widget.urlImage4,
+                urlImage5: widget.urlImage5,
+                userName: widget.userName,
+                time: widget.time,
+                priceNegotiable: widget.priceNegotiable,
+                returnEligible: widget.returnEligible),
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BannerAdWidget(), // Top banner ad
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 20, left: 6.0, right: 12.0),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.location_pin,
+                        color: Colors.grey,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              CarouselSlider.builder(
-                itemCount: links.length,
-                options: CarouselOptions(
-                  autoPlay: true,
-                  aspectRatio: 2.0,
-                  enlargeCenterPage: true,
-                ),
-                itemBuilder: (context, index, realIdx) {
-                  return Center(
-                      child: Image.network(links[index],
-                          fit: BoxFit.cover, width: 1000));
-                },
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "Price: \$${widget.itemPrice}",
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Container(
-                height: 1,
-                color: Colors.grey,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Seller Information",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MyProfile(sellerId: userId),
+                      const SizedBox(
+                        width: 4.0,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Text(
+                          widget.address,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(letterSpacing: 2.0),
                         ),
-                      );
-                    },
-                    child: const Text(
-                      "View Profile",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Colors.blue,
-                        decorationColor: Colors.blue,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Text(widget.userName.toUpperCase()),
-              const SizedBox(
-                height: 5,
-              ),
-              BannerAdWidget(), // Bottom banner ad
-
-              const Text(
-                "Description",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Container(
-                height: 1,
-                color: Colors.grey,
-              ),
-              Container(
-                height: 3,
-              ),
-              Text("Item: ${widget.title}"),
-              Text("Color: ${widget.itemColor}"),
-              Text("Description: ${widget.description}"),
-           /*   Text("Distance: ${distanceInMiles.toStringAsFixed(1)}"),*/
-              Row(
-                children: [
-                  infoCard(text: "${distanceInMiles.toStringAsFixed(1)} mil",image: "assets/images/road.png",),
-                  infoCard(text: "\$${widget.itemPrice}",image: "assets/images/give-money.png",),
-
-                ],
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              GestureDetector(
-                onDoubleTap: () {
-                  //MapsLauncher.launchCoordinates(widget.sellerLat, widget.sellerLng);
-                  MapsLauncher.launchQuery(widget.address);
-                },
-                child: Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: FlutterMap(
-                    options: MapOptions(
-                      center: LatLng(widget.sellerLat, widget.sellerLng),
-                      zoom: 13.0,
-                    ),
-                    layers: [
-                      TileLayerOptions(
-                        urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c'],
-                      ),
-                      MarkerLayerOptions(
-                        markers: [
-                          Marker(
-                            width: 80.0,
-                            height: 80.0,
-                            point: LatLng(widget.sellerLat, widget.sellerLng),
-                            builder: (ctx) => const Icon(
-                              Icons.location_on,
-                              color: Colors.red,
-                              size: 40.0,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+                links.isEmpty
+                    ? CarouselSlider.builder(
+                        itemCount: links.length,
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: true,
+                        ),
+                        itemBuilder: (context, index, realIdx) {
+                          return Center(
+                              child: Image.network(links[index],
+                                  fit: BoxFit.cover, width: 1000));
+                        },
+                      )
+                    : circularProgress(),
+                const SizedBox(height: 10),
+                Text(
+                  "Price: \$${widget.itemPrice}",
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Seller Information",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MyAds(sellerId: userId),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "View Profile",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.blue,
+                          decorationColor: Colors.blue,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Text(widget.userName.toUpperCase()),
+                const SizedBox(
+                  height: 5,
+                ),
+                BannerAdWidget(), // Bottom banner ad
+
+                const Text(
+                  "Description",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                Container(
+                  height: 3,
+                ),
+                Text("Item: ${widget.title}"),
+                Text("Color: ${widget.itemColor}"),
+                Text("Description: ${widget.description}"),
+
+                /*   Text("Distance: ${distanceInMiles.toStringAsFixed(1)}"),*/
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    infoCard(
+                      text: "${distanceInMiles.toStringAsFixed(1)} mil",
+                      image: "assets/images/road.png",
+                      color: Colors.black,
+                    ),
+                    infoCard(
+                      text: "\$${widget.itemPrice}",
+                      image: "assets/images/give-money.png",
+                      color: Colors.green,
+                    ),
+                    infoCard(
+                        text: "${tAgo.format(widget.time.toDate())}",
+                        image: "assets/images/hourglass.png",
+                        color: Colors.red),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    widget.priceNegotiable
+                        ? const infoCard(
+                            text: "Negotiable",
+                            image: "assets/images/money.png",
+                            color: Colors.black,
+                          )
+                        : Container(),
+                    widget.returnEligible
+                        ? const infoCard(
+                            text: "Returns",
+                            image: "assets/images/security.png",
+                            color: Colors.green,
+                          )
+                        : Container(),
+                  ],
+                ),
+                widget.returnEligible
+                    ? Opacity(
+                        opacity: 0.6,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.yellow),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 3.0, horizontal: 8),
+                            child: Text(
+                                "Return Eligible, this item can be returned within 24 hrs of purchase."),
+                          ),
+                        ),
+                      )
+                    : Container(),
+
+                const SizedBox(
+                  height: 6,
+                ),
+                Container(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                GestureDetector(
+                  onDoubleTap: () {
+                    //MapsLauncher.launchCoordinates(widget.sellerLat, widget.sellerLng);
+                    MapsLauncher.launchQuery(widget.address);
+                  },
+                  child: Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: FlutterMap(
+                      options: MapOptions(
+                        center: LatLng(widget.sellerLat, widget.sellerLng),
+                        zoom: 13.0,
+                      ),
+                      layers: [
+                        TileLayerOptions(
+                          urlTemplate:
+                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                          subdomains: ['a', 'b', 'c'],
+                        ),
+                        MarkerLayerOptions(
+                          markers: [
+                            Marker(
+                              width: 80.0,
+                              height: 80.0,
+                              point: LatLng(widget.sellerLat, widget.sellerLng),
+                              builder: (ctx) => const Icon(
+                                Icons.location_on,
+                                color: Colors.red,
+                                size: 40.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -333,36 +431,45 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
 }
 
 class infoCard extends StatelessWidget {
-  const infoCard({
-    super.key,
-    required this.text, required this.image,
-  });
+  const infoCard(
+      {super.key,
+      required this.text,
+      required this.image,
+      required this.color});
 
   final String text;
-final String image;
+  final String image;
+  final Color color;
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10,horizontal: 3),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 3),
       child: Material(
-        borderRadius:  BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8),
         elevation: 5,
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius:                     BorderRadius.circular(8),
-
+            borderRadius: BorderRadius.circular(8),
           ),
-          width: 80,
-
+          width: 90,
+          height: 95,
           child: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 3,left: 10,right: 10,top: 10),
-                  child: Image.asset(image),
+                  padding: const EdgeInsets.only(
+                      bottom: 3, left: 10, right: 10, top: 10),
+                  child: ImageIcon(
+                    AssetImage(image),
+                    color: color,
+                    size: 44,
+                  ),
                 ),
-                Text(text),
+                AutoSizeText(
+                  text,
+                ),
               ],
             ),
           ),
