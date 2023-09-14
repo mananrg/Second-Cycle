@@ -45,6 +45,7 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   String userName = "";
   String userNumber = "";
+  String userEmail="";
   String itemPrice = "";
   String itemModel = "";
   String itemColor = "";
@@ -59,8 +60,11 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
       setState(() {
         getUserName = results.data()?['userName'];
         getUserNumber = results.data()?['userNumber'];
+        getUserEmail = results.data()?['email'];
+
         userNumber = getUserNumber;
         userName = getUserName;
+userEmail = getUserEmail;
         if (kDebugMode) {
           print("&" * 100);
           print(userName);
@@ -294,6 +298,7 @@ class _UploadAdScreenState extends State<UploadAdScreen> {
                       'address': completeAddress,
                       'uid': auth.currentUser?.uid,
                       'userNumber': userNumber,
+                      'userEmail': userEmail,
                       'time': DateTime.now(),
                       'status': "not approved",
                       'itemPrice': itemPrice,

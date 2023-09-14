@@ -12,14 +12,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'GoogleAds/BannerAd.dart';
 import 'package:video_player/video_player.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:timeago/timeago.dart' as tAgo;
 import 'Widgets/GetCurrentLocation.dart';
 
 class ImageSliderScreen extends StatefulWidget {
-  ImageSliderScreen({
+  const ImageSliderScreen({
     Key? key,
     required this.title,
     required this.itemColor,
@@ -169,11 +168,62 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
                   backgroundColor: Colors.blue),
               child: const Text("Contact Seller"),
               onPressed: () async {
-                final link = WhatsAppUnilink(
-                  phoneNumber: '+1 ${widget.userNumber}',
-                  text: "Hey! I'm inquiring about the ${widget.title}",
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SizedBox(
+                      height: 120,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              onPressed: () {},
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.mail),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    "Email",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                final link = WhatsAppUnilink(
+                                  phoneNumber: '+1 ${widget.userNumber}',
+                                  text:
+                                      "Hey! I'm inquiring about the ${widget.title}",
+                                );
+                                await launch(link.toString());
+                              },
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.message),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    "Whatsapp",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
-                await launch(link.toString());
               },
             ),
           ],
@@ -210,7 +260,7 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BannerAdWidget(), // Top banner ad
+                //  BannerAdWidget(), // Top banner ad
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 20, left: 6.0, right: 12.0),
@@ -234,21 +284,22 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
                     ],
                   ),
                 ),
-                links.isEmpty
-                    ? CarouselSlider.builder(
-                        itemCount: links.length,
-                        options: CarouselOptions(
-                          autoPlay: true,
-                          aspectRatio: 2.0,
-                          enlargeCenterPage: true,
-                        ),
-                        itemBuilder: (context, index, realIdx) {
-                          return Center(
-                              child: Image.network(links[index],
-                                  fit: BoxFit.cover, width: 1000));
-                        },
-                      )
-                    : circularProgress(),
+                //links.isEmpty
+                //   ?
+                CarouselSlider.builder(
+                  itemCount: links.length,
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    aspectRatio: 2.0,
+                    enlargeCenterPage: true,
+                  ),
+                  itemBuilder: (context, index, realIdx) {
+                    return Center(
+                        child: Image.network(links[index],
+                            fit: BoxFit.cover, width: 1000));
+                  },
+                ),
+                //: circularProgress(),
                 const SizedBox(height: 10),
                 Text(
                   "Price: \$${widget.itemPrice}",
@@ -294,7 +345,7 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
                 const SizedBox(
                   height: 5,
                 ),
-                BannerAdWidget(), // Bottom banner ad
+                //BannerAdWidget(), // Bottom banner ad
 
                 const Text(
                   "Description",
@@ -330,7 +381,7 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
                       color: Colors.green,
                     ),
                     infoCard(
-                        text: "${tAgo.format(widget.time.toDate())}",
+                        text: tAgo.format(widget.time.toDate()),
                         image: "assets/images/hourglass.png",
                         color: Colors.red),
                   ],
