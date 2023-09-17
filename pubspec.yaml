@@ -60,6 +60,7 @@ dependencies:
   pinput:
   intl_phone_field:
   auto_size_text:
+  email_otp:
 
 dev_dependencies:
   flutter_test:

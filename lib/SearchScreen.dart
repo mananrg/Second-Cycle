@@ -133,6 +133,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             title: items?.docs[i].get('itemModel'),
                             itemColor: items?.docs[i].get('itemColor'),
                             userNumber: items?.docs[i].get('userNumber'),
+                            userEmail: items?.docs[i].get('userEmail'),
                             itemPrice: items?.docs[i]
                                 .get('itemPrice'),
                             userName: items?.docs[i]

@@ -276,10 +276,9 @@ class _MyAdsState extends State<MyAds> {
                             itemPrice: items?.docs[i]
                                 .get('itemPrice'),
                             userName: items?.docs[i]
-
                             .get('userName'),
-
                             userNumber: items?.docs[i].get('userNumber'),
+                            userEmail: items?.docs[i].get('userEmail'),
                             description: items?.docs[i].get('description'),
                             sellerLat: items?.docs[i].get('lat'),
                             sellerLng: items?.docs[i].get('lng'),

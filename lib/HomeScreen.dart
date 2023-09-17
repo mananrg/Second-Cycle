@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -16,12 +15,10 @@ import 'package:resell_app/uploadAdScreen.dart';
 import 'package:timeago/timeago.dart' as tAgo;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import 'GoogleAds/BannerAd.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -51,7 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
         print("its apple");
         print("*" * 100);
       }
-
     }
     bannerAd = BannerAd(
       size: AdSize.banner,
@@ -89,7 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
       getUserAddress();
     } else {
       // Request permission
-
       final status = await Permission.location.request();
       if (status.isGranted) {
         // Permission granted
@@ -198,7 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               BannerAdWidget(), // Top banner ad
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -300,58 +294,61 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: items!.docs.length,
                         padding: const EdgeInsets.all(8.0),
                         itemBuilder: (context, i) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                color: Colors.grey, //color of border
-                                width: 0.5, //width of border
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ImageSliderScreen(
+                                    title:
+                                    items?.docs[i].get('itemModel'),
+                                    itemColor:
+                                    items?.docs[i].get('itemColor'),
+                                    userNumber: items?.docs[i]
+                                        .get('userNumber'),
+                                    itemPrice:
+                                    items?.docs[i].get('itemPrice'),
+                                    userName:
+                                    items?.docs[i].get('userName'),
+                                    userEmail: items?.docs[i].get('userEmail'),
+                                    description: items?.docs[i]
+                                        .get('description'),
+                                    sellerLat: items?.docs[i].get('lat'),
+                                    sellerLng: items?.docs[i].get('lng'),
+                                    address:
+                                    items?.docs[i].get('address'),
+                                    urlImage1:
+                                    items?.docs[i].get('urlImage1'),
+                                    urlImage2:
+                                    items?.docs[i].get('urlImage2'),
+                                    urlImage3:
+                                    items?.docs[i].get('urlImage3'),
+                                    urlImage4:
+                                    items?.docs[i].get('urlImage4'),
+                                    urlImage5:
+                                    items?.docs[i].get('urlImage5'), time: items?.docs[i].get('time'),
+                                    priceNegotiable:items?.docs[i].get('priceNegotiable'),
+                                    returnEligible:items?.docs[i].get('returnEligible'),
+                                  ),
+                                ),
+                              );
+                            },
+
+                            child: Container(
+                              height: 180,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.grey, //color of border
+                                  width: 0.5, //width of border
+                                ),
                               ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => ImageSliderScreen(
-                                            title:
-                                                items?.docs[i].get('itemModel'),
-                                            itemColor:
-                                                items?.docs[i].get('itemColor'),
-                                            userNumber: items?.docs[i]
-                                                .get('userNumber'),
-                                            itemPrice:
-                                                items?.docs[i].get('itemPrice'),
-                                            userName:
-                                                items?.docs[i].get('userName'),
-                                            description: items?.docs[i]
-                                                .get('description'),
-                                            sellerLat: items?.docs[i].get('lat'),
-                                            sellerLng: items?.docs[i].get('lng'),
-                                            address:
-                                                items?.docs[i].get('address'),
-                                            urlImage1:
-                                                items?.docs[i].get('urlImage1'),
-                                            urlImage2:
-                                                items?.docs[i].get('urlImage2'),
-                                            urlImage3:
-                                                items?.docs[i].get('urlImage3'),
-                                            urlImage4:
-                                                items?.docs[i].get('urlImage4'),
-                                            urlImage5:
-                                                items?.docs[i].get('urlImage5'), time: items?.docs[i].get('time'),
-                                            priceNegotiable:items?.docs[i].get('priceNegotiable'),
-                                            returnEligible:items?.docs[i].get('returnEligible'),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
                                       padding: EdgeInsets.zero,
                                       height: 130,
                                       width: MediaQuery.of(context).size.width,
@@ -376,30 +373,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const Expanded(
-                                    child: SizedBox(),
-                                  ),
-                                  Text(
-                                    "\$${items?.docs[i].get("itemPrice")}",
-                                    style: const TextStyle(
-                                      letterSpacing: 2.0,
+                                    const Expanded(
+                                      child: SizedBox(),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 2.0),
-                                    child: Text(
-                                      "${items?.docs[i].get("itemModel")}"
-                                          .toUpperCase(),style: const TextStyle(fontWeight: FontWeight.bold),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "\$${items?.docs[i].get("itemPrice")}",
+                                          style: const TextStyle(
+                                            letterSpacing: 2.0,
+                                          ),
+                                        ),
+                                        Text(tAgo.format(
+                                          (items?.docs[i].get('time')).toDate(),
+                                        )),
+                                      ],
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 2.0),
-                                    child: Text(tAgo.format(
-                                      (items?.docs[i].get('time')).toDate(),
-                                    )),
-                                  ),
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 2.0),
+                                      child: Text(
+                                        "${items?.docs[i].get("itemModel")}"
+                                            .toUpperCase(),style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -426,7 +426,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
   String getCurrentDocId(int index) {
     return items?.docs[index].id ?? '';
   }

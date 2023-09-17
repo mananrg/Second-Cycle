@@ -96,11 +96,11 @@ MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\gandh\.gradle\caches\tra
 	android:name
 		INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml
 manifest
-ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
-INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
-INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
-INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
-MERGED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
+ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
+INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
+INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
+INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
+MERGED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
 MERGED from [:cloud_firestore] C:\Users\gandh\OneDrive\Desktop\Second-Cycle\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-17:12
 MERGED from [:firebase_auth] C:\Users\gandh\OneDrive\Desktop\Second-Cycle\build\firebase_auth\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-17:12
 MERGED from [:firebase_storage] C:\Users\gandh\OneDrive\Desktop\Second-Cycle\build\firebase_storage\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-17:12
@@ -213,15 +213,15 @@ INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\debug
 INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 	package
 		INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
+		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
 		INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\debug\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
+		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
 		INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\debug\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-40:12
+		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:1-53:12
 		INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\debug\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:1:11-69
@@ -265,6 +265,22 @@ uses-permission#android.permission.ACCESS_BACKGROUND_LOCATION
 ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:5:5-85
 	android:name
 		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:5:22-82
+queries
+ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:41:5-52:15
+MERGED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\5a94c6a394b3c4ae5c996f213540c09c\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:32:5-48:15
+MERGED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\5a94c6a394b3c4ae5c996f213540c09c\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:32:5-48:15
+intent#action:name:android.intent.action.VIEW+data:scheme:mailto
+ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:43:9-46:18
+action#android.intent.action.VIEW
+ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:44:13-65
+	android:name
+		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:44:21-62
+data
+ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:45:13-45
+	android:scheme
+		ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:45:19-42
+intent#action:name:android.intent.action.VIEW+data:scheme:tel
+ADDED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml:48:9-51:18
 uses-sdk
 INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\gandh\OneDrive\Desktop\Second-Cycle\android\app\src\main\AndroidManifest.xml
@@ -651,10 +667,6 @@ ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\cac
 		ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:30:13-80
 intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:firebase.auth+data:path:/+data:scheme:genericidp
 ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:35:13-45:29
-action#android.intent.action.VIEW
-ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:36:17-69
-	android:name
-		ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:36:25-66
 category#android.intent.category.DEFAULT
 ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:38:17-76
 	android:name
@@ -663,14 +675,6 @@ category#android.intent.category.BROWSABLE
 ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:39:17-78
 	android:name
 		ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:39:27-75
-data
-ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:41:17-44:51
-	android:path
-		ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:43:21-37
-	android:host
-		ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:42:21-49
-	android:scheme
-		ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:44:21-48
 activity#com.google.firebase.auth.internal.RecaptchaActivity
 ADDED from [com.google.firebase:firebase-auth:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\ece3b42f17de15c112345ec13cb19f80\transformed\jetified-firebase-auth-22.0.0\AndroidManifest.xml:47:9-64:20
 	android:excludeFromRecents
@@ -786,8 +790,6 @@ REJECTED from [androidx.work:work-runtime:2.7.0] C:\Users\gandh\.gradle\caches\t
 		ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\5a94c6a394b3c4ae5c996f213540c09c\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:29:9-28
 	android:name
 		ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\5a94c6a394b3c4ae5c996f213540c09c\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:28:9-65
-queries
-ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\5a94c6a394b3c4ae5c996f213540c09c\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:32:5-48:15
 intent#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+data:scheme:https
 ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\gandh\.gradle\caches\transforms-3\5a94c6a394b3c4ae5c996f213540c09c\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:35:9-41:18
 intent#action:name:android.support.customtabs.action.CustomTabsService

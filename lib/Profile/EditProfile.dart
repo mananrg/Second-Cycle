@@ -1,11 +1,11 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:resell_app/SignupScreen/signUpScreen.dart';
 import 'package:resell_app/Widgets/ResetPassword.dart';
-
 import '../globalVar.dart';
 
 class EditProfile extends StatefulWidget {
@@ -22,6 +22,9 @@ class _EditProfileState extends State<EditProfile> {
   String userNumber = "";
   String userStatus = "";
   final User? currentUser = FirebaseAuth.instance.currentUser;
+  bool viewNumb = false;
+  bool isEmailVerified = false;
+  TextEditingController otpController = TextEditingController();
 
   Future<void> deleteUserAndItems() async {
     if (currentUser != null) {
@@ -44,8 +47,10 @@ class _EditProfileState extends State<EditProfile> {
       // Log out the user
       await FirebaseAuth.instance.signOut();
       setState(() {});
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => SignUpScreen()));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => const SignUpScreen()));
       // Navigate to the login screen or any other desired screen
       // You can use Navigator.pushReplacement() to replace the current route
     }
@@ -70,33 +75,53 @@ class _EditProfileState extends State<EditProfile> {
         getUserNumber = results.data()?['userNumber'];
         getUserStatus = results.data()?['status'];
         getUserEmail = results.data()?['email'];
+
+        isEmailVerified = results.data()?['isEmailVerified'];
+        viewNumb = results.data()?['viewNumber'];
         userNumber = getUserNumber;
         userName = getUserName;
         userStatus = getUserStatus;
-        if (kDebugMode) {
-          print("&" * 100);
-          print(userName);
-          print(userNumber);
-          print("&" * 100);
-        }
-        if (kDebugMode) {
-          print("Hello");
-          print("*" * 10);
-          print(getUserNumber);
-          print(getUserName);
-          print("*" * 10);
-        }
       });
     });
   }
 
+  EmailOTP myauth = EmailOTP();
+
   @override
   Widget build(BuildContext context) {
+    Widget myCard() {
+      return Card(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: otpController,
+                decoration: const InputDecoration(hintText: "Enter OTP"),
+              ),
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  if (await myauth.verifyOTP(otp: otpController.text) == true) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("OTP is verified"),
+                    ));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Invalid OTP"),
+                    ));
+                  }
+                },
+                child: const Text("Verify")),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-
       appBar: AppBar(
-        title: Text("Update Profile"),
+        title: const Text("Update Profile"),
         centerTitle: true,
         actions: [
           TextButton(
@@ -110,9 +135,6 @@ class _EditProfileState extends State<EditProfile> {
                   .doc(userId)
                   .update(itemData)
                   .then((value) {
-                print("^" * 100);
-                print("Updated");
-                print("^" * 100);
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
@@ -165,7 +187,7 @@ class _EditProfileState extends State<EditProfile> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "My Information",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
@@ -179,11 +201,11 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: TextFormField(
                             initialValue: getUserName,
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                             decoration: const InputDecoration(
                               label: Text(
                                 "Enter your Name",
@@ -205,7 +227,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   TextFormField(
                     initialValue: getUserNumber,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                     decoration: const InputDecoration(
                       label: Text(
                         'Mobile Number',
@@ -229,15 +251,79 @@ class _EditProfileState extends State<EditProfile> {
                       height: 70,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [const Text("Email"), Text(getUserEmail)],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const Text("Email"),
+                                Text(getUserEmail)
+                              ],
+                            ),
+                            isEmailVerified
+                                ? const Icon(
+                                    Icons.verified_rounded,
+                                    color: Colors.blue,
+                                  )
+                                : TextButton(
+                                    onPressed: () async {
+                                      myauth.setConfig(
+                                          appEmail: "gandhimanan1@gmail.com",
+                                          appName: "Email OTP",
+                                          userEmail:
+                                              "fluttersolutionsdev@gmail.com",
+                                          otpLength: 6,
+                                          otpType: OTPType.digitsOnly);
+                                      if (await myauth.sendOTP() == true) {
+                                        _showOtpInputDialog();
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content:
+                                              Text("Oops, OTP send failed"),
+                                        ));
+                                      }
+                                    },
+                                    child: const Text("Verify")),
+                          ],
                         ),
                       )),
                   const SizedBox(
                     height: 5.0,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Allow users to view your number?"),
+                        Switch(
+                          value: viewNumb,
+                          onChanged: (value) {
+                            setState(() {
+                              viewNumb = value;
+                            });
+                            Map<String, dynamic> itemData = {
+                              'viewNumber': viewNumb
+                            };
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(userId)
+                                .update(itemData)
+                                .then(
+                                  (value) {},
+                                );
+                          },
+                          inactiveThumbColor: Colors.red,
+                          inactiveTrackColor: Colors.redAccent,
+                          activeTrackColor: Colors.lightGreenAccent,
+                          activeColor: Colors.greenAccent,
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
               Column(
@@ -252,20 +338,18 @@ class _EditProfileState extends State<EditProfile> {
                       onTap: () {
                         showEmailInputDialog(context);
                       },
-                      child: Container(
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Reset Password",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
-                            )
-                          ],
-                        ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Reset Password",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 18,
+                          )
+                        ],
                       ),
                     ),
                   ),
@@ -328,6 +412,65 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showOtpInputDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Enter OTP"),
+          content: TextField(
+            controller: otpController,
+            keyboardType: TextInputType.number,
+            maxLength: 6,
+            decoration: const InputDecoration(
+              hintText: "Enter OTP",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                if (await myauth.verifyOTP(otp: otpController.text) == true) {
+                  Map<String, dynamic> itemData = {'isEmailVerified': true};
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(userId)
+                      .update(itemData)
+                      .then(
+                        (value) {},
+                      );
+
+                  Navigator.pop(context); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("OTP verified successfully"),
+                    ),
+                  );
+                  setState(() {
+                    isEmailVerified = true;
+                    print(isEmailVerified);
+                  });
+                } else {
+                  Navigator.pop(context); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Invalid OTP"),
+                  ));
+                }
+                // Add your OTP verification logic here
+                // Check if the entered OTP is correct
+                // If correct, set isEmailVerified to true
+                // Otherwise, display an error message
+                // You can use otpController.text to get the entered OTP
+                // and compare it with the actual OTP sent
+                // Remember to call Navigator.pop(context) to close the dialog
+              },
+              child: const Text("Verify"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

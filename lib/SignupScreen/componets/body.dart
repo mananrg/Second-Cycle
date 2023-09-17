@@ -37,7 +37,7 @@ class _SignupBodyState extends State<SignupBody> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _focusNode = FocusNode();
-  var visibilityState = false;
+  var visibilityState = true;
 
   Future<void> sendOTP(String phoneNumber) async {
     showDialog(
@@ -64,7 +64,9 @@ class _SignupBodyState extends State<SignupBody> {
 
                     showCursor: true,
                     onCompleted: (pin) {
-                      print(pin);
+                      if (kDebugMode) {
+                        print(pin);
+                      }
                     },
                   ),
                   actions: [
@@ -110,7 +112,9 @@ class _SignupBodyState extends State<SignupBody> {
       codeSent: (String verificationId, [int? resendToken]) {
         // Store the verification ID and show the OTP input UI to the user.
         // You can send the verification ID to the next screen to complete the verification process.
-        print('Verification ID: $verificationId');
+        if (kDebugMode) {
+          print('Verification ID: $verificationId');
+        }
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         // Called when the automatic code retrieval timeout has expired.
@@ -239,6 +243,8 @@ class _SignupBodyState extends State<SignupBody> {
       'email': _lemailController.text.trim(),
       'time': DateTime.now(),
       'status': "approved",
+      'viewNumber': true,
+      'isEmailVerified':false
       // 'imgPro': _image ?? Image.asset("assets/images/person.jpg")
     };
 
