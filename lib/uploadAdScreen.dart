@@ -573,7 +573,7 @@ userEmail = getUserEmail;
       });
     }
   }
-
+/*
   Future<void> retrieveLostData() async {
     final LostData response = await picker.getLostData();
     if (response.isEmpty) {
@@ -587,7 +587,7 @@ userEmail = getUserEmail;
       });
     }
   }
-
+*/
   void deleteImage(int index) {
     setState(() {
       _image.removeAt(index);

@@ -305,7 +305,7 @@ class _SignupBodyState extends State<SignupBody> {
                             GestureDetector(
                               onTap: () async {
                                 final imagePicker = ImagePicker();
-                                final pickedImage = await imagePicker.getImage(
+                                final pickedImage = await imagePicker.pickImage(
                                     source: ImageSource.camera);
 
                                 if (pickedImage != null) {
