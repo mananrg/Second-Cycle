@@ -61,6 +61,7 @@ dependencies:
   intl_phone_field:
   auto_size_text:
   email_otp:
+  change_app_package_name:
 
 dev_dependencies:
   flutter_test:

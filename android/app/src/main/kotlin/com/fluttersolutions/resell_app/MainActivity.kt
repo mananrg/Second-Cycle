@@ -1,4 +1,4 @@
-package com.example.resell_app
+package com.fluttersolutions.resell_app
 
 import io.flutter.embedding.android.FlutterActivity
 
