@@ -23,13 +23,13 @@ Welcome to Second Handz, a Flutter-based mobile application designed to simplify
 
 ## Screenshots
 
-![Screenshot 1](screenshots/screenshot1.png)
+![Screenshot 1](screenshots/screenshot1.png | width=300)
 *Home Screen*
 
-![Screenshot 2](screenshots/screenshot2.png)
+![Screenshot 2](screenshots/screenshot1.png | width=300)
 *Ad Screen*
 
-![Screenshot 3](screenshots/screenshot3.png)
+![Screenshot 3](screenshots/screenshot1.png | width=300)
 *Profile Screen*
 
 ## Installation
