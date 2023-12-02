@@ -85,7 +85,7 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
         setState(() {});
       });
     getLatLngFromAdress();
-getMyData();
+    getMyData();
 
   }
   void sendEmail() async {
@@ -94,10 +94,10 @@ getMyData();
       path: widget.userEmail, // Replace with the recipient's email address
 
 
-        query: _encodeQueryParameters(<String, String>{
-          'subject': "Inquiry about ${widget.title}",
-          'body': 'I am interested in ${widget.title} can you share me some more details?',
-        }),
+      query: _encodeQueryParameters(<String, String>{
+        'subject': "Inquiry about ${widget.title}",
+        'body': 'I am interested in ${widget.title} can you share me some more details?',
+      }),
     );
     if (await canLaunch(emailLaunchUri.toString())) {
       await launch(emailLaunchUri.toString());
@@ -131,7 +131,7 @@ getMyData();
 
       setState(() {
         distanceInMiles = Geolocator.distanceBetween(widget.sellerLat,
-                widget.sellerLng, viewerLatitude, viewerLongitude) *
+            widget.sellerLng, viewerLatitude, viewerLongitude) *
             0.00062137;
         if (kDebugMode) {
           print("(" * 100);
@@ -175,7 +175,7 @@ getMyData();
           title: Text(
             widget.title.toUpperCase(),
             style:
-                const TextStyle(letterSpacing: 2.0, fontWeight: FontWeight.bold),
+            const TextStyle(letterSpacing: 2.0, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
         ),
@@ -242,7 +242,7 @@ getMyData();
                                   final link = WhatsAppUnilink(
                                     phoneNumber: '+1 ${widget.userNumber}',
                                     text:
-                                        "Hey! I'm inquiring about the ${widget.title}",
+                                    "Hey! I'm inquiring about the ${widget.title}",
                                   );
                                   await launch(link.toString());
                                 },
@@ -307,7 +307,7 @@ getMyData();
                   //  BannerAdWidget(), // Top banner ad
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 20, left: 6.0, right: 12.0),
+                    const EdgeInsets.only(top: 20, left: 6.0, right: 12.0),
                     child: Row(
                       children: [
                         const Icon(
@@ -363,7 +363,7 @@ getMyData();
                       const Text(
                         "Seller Information",
                         style:
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -436,35 +436,35 @@ getMyData();
                     children: [
                       widget.priceNegotiable
                           ? const infoCard(
-                              text: "Negotiable",
-                              image: "assets/images/money.png",
-                              color: Colors.black,
-                            )
+                        text: "Negotiable",
+                        image: "assets/images/money.png",
+                        color: Colors.black,
+                      )
                           : Container(),
                       widget.returnEligible
                           ? const infoCard(
-                              text: "Returns",
-                              image: "assets/images/security.png",
-                              color: Colors.green,
-                            )
+                        text: "Returns",
+                        image: "assets/images/security.png",
+                        color: Colors.green,
+                      )
                           : Container(),
                     ],
                   ),
                   widget.returnEligible
                       ? Opacity(
-                          opacity: 0.6,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.yellow),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 3.0, horizontal: 8),
-                              child: Text(
-                                  "Return Eligible, this item can be returned within 24 hrs of purchase."),
-                            ),
-                          ),
-                        )
+                    opacity: 0.6,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.yellow),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 3.0, horizontal: 8),
+                        child: Text(
+                            "Return Eligible, this item can be returned within 24 hrs of purchase."),
+                      ),
+                    ),
+                  )
                       : Container(),
 
                   const SizedBox(
@@ -492,19 +492,19 @@ getMyData();
                           center: LatLng(widget.sellerLat, widget.sellerLng),
                           zoom: 13.0,
                         ),
-                        layers: [
-                          TileLayerOptions(
+                        children: [
+                          TileLayer(
                             urlTemplate:
-                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                            subdomains: ['a', 'b', 'c'],
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            subdomains: const ['a', 'b', 'c'],
                           ),
-                          MarkerLayerOptions(
+                          MarkerLayer(
                             markers: [
                               Marker(
                                 width: 80.0,
                                 height: 80.0,
                                 point: LatLng(widget.sellerLat, widget.sellerLng),
-                                builder: (ctx) => const Icon(
+                                child: const Icon(
                                   Icons.location_on,
                                   color: Colors.red,
                                   size: 40.0,
@@ -529,9 +529,9 @@ getMyData();
 class infoCard extends StatelessWidget {
   const infoCard(
       {super.key,
-      required this.text,
-      required this.image,
-      required this.color});
+        required this.text,
+        required this.image,
+        required this.color});
 
   final String text;
   final String image;
