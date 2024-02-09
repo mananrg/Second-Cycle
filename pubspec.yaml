@@ -54,7 +54,7 @@ dependencies:
   cached_network_image:
   whatsapp_unilink:
   video_player:
-  google_mobile_ads:
+  #google_mobile_ads:
   flutter_map: ^6.0.1
   latlong2:
   pinput:

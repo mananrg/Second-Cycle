@@ -23,34 +23,38 @@ Welcome to Second Handz, a Flutter-based mobile application designed to simplify
 
 ## Screenshots
 
-![Screenshot 1](screenshots/screenshot1.png | width=300)
-*Home Screen*
+### Home Screen 
+<img src="screenshots/screenshot1.png" alt="Screenshot 1" width="300">
 
-![Screenshot 2](screenshots/screenshot1.png | width=300)
-*Ad Screen*
 
-![Screenshot 3](screenshots/screenshot1.png | width=300)
-*Profile Screen*
+### Ads Screen
+<img src="screenshots/screenshot2.png" alt="Screenshot 2" width="300">
+
+### Profile Screen
+<img src="screenshots/screenshot3.png" alt="Screenshot 3" width="300">
+
 
 ## Installation
 
 1. Clone the repository to your local machine.
-   ```bash
+   ```sh
    git clone https://github.com/mananrg/Second-Cycle.git
    ```
 
 2. Navigate to the project directory.
-   ```bash
+   ```sh
    cd Second-Cycle
    ```
 
 3. Install dependencies using Flutter.
-   ```bash
+   ```sh
    flutter pub get
    ```
+
 4. Add Firebase Config
+
 5. Run the app on an emulator or connected device.
-   ```bash
+   ```sh
    flutter run
    ```
 
@@ -60,8 +64,8 @@ If you would like to contribute to Second Handz, please mail on gandhimanan1@gma
 
 ## License
 
-Second Handz is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Second Handz is licensed under the MIT License.
 
 ---
 
-Thank you for using Second Handz! We hope it enhances your university experience. If you have any questions or feedback, feel free to reach out to us at support@secondhandz.com.
+Thank you for using Second Handz! We hope it enhances your university experience. If you have any questions or feedback, feel free to reach out to us at gandhimanan1@gmail.com

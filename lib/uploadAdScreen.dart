@@ -458,7 +458,7 @@ userEmail = getUserEmail;
         const Expanded(
           child: SizedBox(),
         ),
-        BannerAdWidget(), // Top banner ad
+        //BannerAdWidget(), // Top banner ad
       ],
     );
   }

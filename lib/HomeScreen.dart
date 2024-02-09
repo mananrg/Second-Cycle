@@ -14,7 +14,7 @@ import 'package:resell_app/AdDescription.dart';
 import 'package:resell_app/uploadAdScreen.dart';
 import 'package:timeago/timeago.dart' as tAgo;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'GoogleAds/BannerAd.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   FirebaseAuth auth = FirebaseAuth.instance;
   QuerySnapshot? items;
-  late BannerAd bannerAd;
+//  late BannerAd bannerAd;
   bool isAdLoaded = false;
   late var adUnitId;
   String docId='';
@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         print("*" * 100);
       }
     }
+    /*
     bannerAd = BannerAd(
       size: AdSize.banner,
       adUnitId: adUnitId,
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }),
       request: const AdRequest(),
     );
-    bannerAd.load();
+    bannerAd.load();*/
   }
 
   getMyData() {
@@ -192,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BannerAdWidget(), // Top banner ad
+             // BannerAdWidget(), // Top banner ad
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -279,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   )
                   : const SizedBox(),*/
-              BannerAdWidget(), // Top banner ad
+              //BannerAdWidget(), // Top banner ad
               Expanded(
                 child: items != null
                     ? GridView.builder(
