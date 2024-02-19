@@ -336,6 +336,7 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
                       autoPlay: false,
                       aspectRatio: 2.0,
                       enlargeCenterPage: true,
+                      enableInfiniteScroll: false
                     ),
                     itemBuilder: (context, index, realIdx) {
                       return Center(
@@ -495,7 +496,7 @@ class _ImageSliderScreenState extends State<ImageSliderScreen> {
                         children: [
                           TileLayer(
                             urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                             subdomains: const ['a', 'b', 'c'],
                           ),
                           MarkerLayer(

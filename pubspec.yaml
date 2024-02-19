@@ -62,6 +62,8 @@ dependencies:
   auto_size_text:
   email_otp:
   change_app_package_name:
+  flutter_zoom_drawer:
+
 
 dev_dependencies:
   flutter_test:

@@ -123,6 +123,7 @@ class _EditProfileState extends State<EditProfile> {
       appBar: AppBar(
         title: const Text("Update Profile"),
         centerTitle: true,
+        elevation: 2,
         actions: [
           TextButton(
             onPressed: () {

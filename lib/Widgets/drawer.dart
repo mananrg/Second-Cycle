@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:resell_app/Profile/AllProfileAds.dart';
 import 'package:resell_app/Profile/EditProfile.dart';
-import 'package:resell_app/SignupScreen/componets/body.dart';
 import 'package:resell_app/globalVar.dart';
 
 import '../SignupScreen/signUpScreen.dart';
@@ -15,28 +14,25 @@ class MyDrawer extends StatelessWidget {
     FirebaseAuth auth = FirebaseAuth.instance;
 
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      backgroundColor: Colors.blue,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Container(
-              height: 400,
-              child:        Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Hey $getUserName"),
-                ],
-              ),
-
-            ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height *0.04
+      ,
           ),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Edit Profile'),
+            title: Text("Hey $getUserName",style: TextStyle(color: Colors.white),),
+
+          ),
+
+
+
+          ListTile(
+            leading: const Icon(Icons.person, color: Colors.white,),
+            title: const Text('Edit Profile',style: TextStyle(color: Colors.white),),
             onTap: () {
               // Handle Home button tap
               Navigator.push(
@@ -48,8 +44,8 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('My Ads'),
+            leading: const Icon(Icons.person, color: Colors.white,),
+            title: const Text('My Ads', style: TextStyle(color: Colors.white),),
             onTap: () {
               // Handle Home button tap
               Navigator.push(
@@ -61,8 +57,8 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.login_outlined),
-            title: const Text('Logout'),
+            leading: const Icon(Icons.login_outlined, color: Colors.white,),
+            title: const Text('Logout', style: TextStyle(color: Colors.white),),
             onTap: () {
               // Handle Settings button tap
               auth.signOut().then((_) {

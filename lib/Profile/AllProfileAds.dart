@@ -1,6 +1,7 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:resell_app/HomeScreen.dart';
 import 'package:resell_app/globalVar.dart';
@@ -24,14 +25,14 @@ class _MyAdsState extends State<MyAds> {
   late String description;
   QuerySnapshot? items;
   Future<Future> showDialogForUpdateData(
-      selectedDoc,
-      oldUserName,
-      oldPhoneNumber,
-      oldItemPrice,
-      oldItemName,
-      oldItemColor,
-      oldItemDescription,
-      ) async {
+    selectedDoc,
+    oldUserName,
+    oldPhoneNumber,
+    oldItemPrice,
+    oldItemName,
+    oldItemColor,
+    oldItemDescription,
+  ) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -45,7 +46,7 @@ class _MyAdsState extends State<MyAds> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                 TextFormField(
+                  TextFormField(
                     initialValue: oldUserName,
                     decoration: const InputDecoration(
                       hintText: 'Enter your name',
@@ -142,53 +143,53 @@ class _MyAdsState extends State<MyAds> {
                     child: const Text("Update Now"),
                     onPressed: () {
                       Map<String, dynamic> itemData = {
-                       'userName': oldUserName,
+                        'userName': oldUserName,
                         'userNumber': oldPhoneNumber,
                         'itemPrice': oldItemPrice,
                         'itemModel': oldItemName,
                         'itemColor': oldItemColor,
                         'description': oldItemDescription,
                       };
-                      print("@"*100);
+                      print("@" * 100);
                       print(itemData);
-                      print("@"*100);
+                      print("@" * 100);
                       FirebaseFirestore.instance
                           .collection('items')
                           .doc(selectedDoc)
                           .update(itemData)
                           .then((value) {
-                            print("^"*100);
-                            print("Updated");
-                            print("^"*100);
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(
-                                SnackBar(
-                                  elevation: 0,
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: Colors.transparent,
-                                  content: AwesomeSnackbarContent(
-                                    title: 'Ad Updated',
-                                    message:
+                        print("^" * 100);
+                        print("Updated");
+                        print("^" * 100);
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                              elevation: 0,
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              content: AwesomeSnackbarContent(
+                                title: 'Ad Updated',
+                                message:
                                     "To update profile please go to Edit Profile Section",
-                                    contentType: ContentType.success,
-                                  ),
-                                ),
-                              );
+                                contentType: ContentType.success,
+                              ),
+                            ),
+                          );
                       }).catchError((onError) {
                         const AlertDialog(
                           title: Text("Issue Updating Data"),
                           content: Text("Please try again later!"),
                         );
                       });
-
                     })
               ],
             ),
           );
         });
   }
+
   _buildBackButton() {
     return IconButton(
       onPressed: () {
@@ -236,13 +237,17 @@ class _MyAdsState extends State<MyAds> {
     });
   }
 
- Widget showItemsList() {
+  Widget showItemsList() {
     if (items != null) {
-      print("*" * 100);
-      print(items);
-      print("*" * 100);
+      if (kDebugMode) {
+        print("*" * 100);
+        print(items);
+        print("*" * 100);
+        print("*" * 100);
+      }
 
-     return ListView.builder(
+
+      return ListView.builder(
           itemCount: items!.docs.length,
           padding: const EdgeInsets.all(8.0),
           itemBuilder: (context, i) {
@@ -273,10 +278,8 @@ class _MyAdsState extends State<MyAds> {
                           builder: (_) => ImageSliderScreen(
                             title: items?.docs[i].get('itemModel'),
                             itemColor: items?.docs[i].get('itemColor'),
-                            itemPrice: items?.docs[i]
-                                .get('itemPrice'),
-                            userName: items?.docs[i]
-                            .get('userName'),
+                            itemPrice: items?.docs[i].get('itemPrice'),
+                            userName: items?.docs[i].get('userName'),
                             userNumber: items?.docs[i].get('userNumber'),
                             userEmail: items?.docs[i].get('userEmail'),
                             description: items?.docs[i].get('description'),
@@ -289,8 +292,10 @@ class _MyAdsState extends State<MyAds> {
                             urlImage4: items?.docs[i].get('urlImage4'),
                             urlImage5: items?.docs[i].get('urlImage5'),
                             time: items?.docs[i].get('time'),
-                              priceNegotiable:items?.docs[i].get('priceNegotiable'),
-                              returnEligible:items?.docs[i].get('returnEligible'),
+                            priceNegotiable:
+                                items?.docs[i].get('priceNegotiable'),
+                            returnEligible:
+                                items?.docs[i].get('returnEligible'),
                           ),
                         ),
                       );
@@ -335,7 +340,7 @@ class _MyAdsState extends State<MyAds> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                                if (items?.docs[i].get('uid') ==
+                                              if (items?.docs[i].get('uid') ==
                                                   userId) {
                                                 showDialogForUpdateData(
                                                   items?.docs[i].id,
@@ -454,35 +459,23 @@ class _MyAdsState extends State<MyAds> {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          leading: _buildBackButton(),
+          elevation: 2,
           title: Text(
-            "$adUserName",
-            style: const TextStyle(color: Colors.white),
+            adUserName,
+            style: const TextStyle(color: Colors.black),
           ),
           centerTitle: true,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [
-                    Colors.deepPurple.shade300,
-                    Colors.deepPurple,
-                  ],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 0.0),
-                  stops: const [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
-          ),
         ),
         body: RefreshIndicator(
-   
-    onRefresh: () => Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-    builder: (BuildContext context) =>  MyAds(sellerId: widget.sellerId),
-    ),
-    ),
+          onRefresh: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  MyAds(sellerId: widget.sellerId),
+            ),
+          ),
           child: Center(
             child: Container(
               width: _screenWidth,

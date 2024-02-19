@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:resell_app/SearchScreen.dart';
 import 'package:resell_app/Widgets/drawer.dart';
 import 'package:resell_app/globalVar.dart';
@@ -24,13 +25,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   FirebaseAuth auth = FirebaseAuth.instance;
   QuerySnapshot? items;
+  final ZoomDrawerController zoomController = ZoomDrawerController();
+
 //  late BannerAd bannerAd;
   bool isAdLoaded = false;
   late var adUnitId;
-  String docId='';
+  String docId = '';
   Position? viewerPosition;
   initBannerAd() {
     if (Platform.isAndroid) {
@@ -40,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
         print("its android");
         print("*" * 100);
       }
-
     } else if (Platform.isIOS) {
       adUnitId = "ca-app-pub-3940256099942544/2934735716";
       if (kDebugMode) {
@@ -119,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
       desiredAccuracy: LocationAccuracy.high,
     );
     position = newPosition;
-   // viewerPosition= newPosition;
+    // viewerPosition= newPosition;
     List<Placemark> placemarks = await placemarkFromCoordinates(
       newPosition.latitude,
       newPosition.longitude,
@@ -152,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getMyData();
     initBannerAd();
     requestLocationPermission();
+
   }
 
   @override
@@ -159,19 +161,91 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      key: _scaffoldKey,
-      drawer: const MyDrawer(),
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            _scaffoldKey.currentState?.openDrawer();
-          },
+
+      body: ZoomDrawer(
+        menuBackgroundColor: Colors.blue,
+        controller: zoomController,
+        mainScreen: AllHomeAds(screenWidth: screenWidth, items: items, zoomController: zoomController,),
+        menuScreen: const MyDrawer(),
+        borderRadius: 24.0,
+mainScreenScale: 0.1,
+
+        slideWidth: MediaQuery.of(context).size.width * 0.6,
+        openCurve: Curves.fastOutSlowIn,
+        closeCurve: Curves.bounceOut,
+        showShadow: true,
+        angle: 0,
+        drawerShadowsBackgroundColor: Colors.white,
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add Post',
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const UploadAdScreen(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  String getCurrentDocId(int index) {
+    return items?.docs[index].id ?? '';
+  }
+}
+
+class AllHomeAds extends StatefulWidget {
+  const AllHomeAds({
+    super.key,
+    required this.screenWidth,
+    required this.items,
+    required this.zoomController
+  });
+
+  final double screenWidth;
+  final QuerySnapshot<Object?>? items;
+  final ZoomDrawerController zoomController;
+
+  @override
+  State<AllHomeAds> createState() => _AllHomeAdsState();
+}
+
+class _AllHomeAdsState extends State<AllHomeAds> {
+ bool drawerState = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () => Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const HomeScreen(),
         ),
-        title: const Text("Second Handz"),
-        centerTitle: true,
-        actions: [
-          Padding(
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              if (drawerState) {
+                widget.zoomController.close!();
+                print("DrawerState Closed");
+              } else {
+                widget.zoomController.open!();
+                print("DrawerState Open");
+              }
+              setState(() {
+                drawerState = !drawerState;
+              });
+            },
+          ),
+          title: const Text("Second Handz"),
+          centerTitle: true,
+          actions: [
+            Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: IconButton(
                 icon: const Icon(Icons.search_rounded),
@@ -179,21 +253,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (_) => const SearchScreen()));
                 },
-              ))
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const HomeScreen(),
-          ),
+              ),
+            ),
+          ],
         ),
-        child: SafeArea(
+        body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             // BannerAdWidget(), // Top banner ad
+              // BannerAdWidget(), // Top banner ad
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -204,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Card(
                           color: Colors.orange,
                           child: SizedBox(
-                            width: screenWidth * 0.45,
+                            width: widget.screenWidth * 0.45,
                             height: 100,
                             child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -237,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Card(
                         color: Colors.blue,
                         child: SizedBox(
-                          width: screenWidth * 0.45,
+                          width: widget.screenWidth * 0.45,
                           height: 100,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -282,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : const SizedBox(),*/
               //BannerAdWidget(), // Top banner ad
               Expanded(
-                child: items != null
+                child: widget.items != null
                     ? GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
@@ -292,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           childAspectRatio:
                               0.82, // Width to height ratio of each grid item
                         ),
-                        itemCount: items!.docs.length,
+                        itemCount: widget.items!.docs.length,
                         padding: const EdgeInsets.all(8.0),
                         itemBuilder: (context, i) {
                           return GestureDetector(
@@ -301,40 +369,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => ImageSliderScreen(
-                                    title:
-                                    items?.docs[i].get('itemModel'),
-                                    itemColor:
-                                    items?.docs[i].get('itemColor'),
-                                    userNumber: items?.docs[i]
-                                        .get('userNumber'),
-                                    itemPrice:
-                                    items?.docs[i].get('itemPrice'),
-                                    userName:
-                                    items?.docs[i].get('userName'),
-                                    userEmail: items?.docs[i].get('userEmail'),
-                                    description: items?.docs[i]
-                                        .get('description'),
-                                    sellerLat: items?.docs[i].get('lat'),
-                                    sellerLng: items?.docs[i].get('lng'),
-                                    address:
-                                    items?.docs[i].get('address'),
-                                    urlImage1:
-                                    items?.docs[i].get('urlImage1'),
-                                    urlImage2:
-                                    items?.docs[i].get('urlImage2'),
-                                    urlImage3:
-                                    items?.docs[i].get('urlImage3'),
-                                    urlImage4:
-                                    items?.docs[i].get('urlImage4'),
-                                    urlImage5:
-                                    items?.docs[i].get('urlImage5'), time: items?.docs[i].get('time'),
-                                    priceNegotiable:items?.docs[i].get('priceNegotiable'),
-                                    returnEligible:items?.docs[i].get('returnEligible'),
+                                    title: widget.items?.docs[i].get('itemModel'),
+                                    itemColor: widget.items?.docs[i].get('itemColor'),
+                                    userNumber: widget.items?.docs[i].get('userNumber'),
+                                    itemPrice: widget.items?.docs[i].get('itemPrice'),
+                                    userName: widget.items?.docs[i].get('userName'),
+                                    userEmail: widget.items?.docs[i].get('userEmail'),
+                                    description:
+                                        widget.items?.docs[i].get('description'),
+                                    sellerLat: widget.items?.docs[i].get('lat'),
+                                    sellerLng: widget.items?.docs[i].get('lng'),
+                                    address: widget.items?.docs[i].get('address'),
+                                    urlImage1: widget.items?.docs[i].get('urlImage1'),
+                                    urlImage2: widget.items?.docs[i].get('urlImage2'),
+                                    urlImage3: widget.items?.docs[i].get('urlImage3'),
+                                    urlImage4: widget.items?.docs[i].get('urlImage4'),
+                                    urlImage5: widget.items?.docs[i].get('urlImage5'),
+                                    time: widget.items?.docs[i].get('time'),
+                                    priceNegotiable:
+                                        widget.items?.docs[i].get('priceNegotiable'),
+                                    returnEligible:
+                                        widget.items?.docs[i].get('returnEligible'),
                                   ),
                                 ),
                               );
                             },
-
                             child: Container(
                               height: 180,
                               decoration: BoxDecoration(
@@ -356,21 +415,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(5),
                                         child: CachedNetworkImage(
-                                          imageUrl:
-                                              items?.docs[i].get("urlImage1"),
-                                          placeholder: (context, url) =>
-                                              const Center(
-                                            child: SizedBox(
-                                              height: 50,
-                                              width: 50,
-                                              child:
-                                                  CircularProgressIndicator(),
+                                          imageUrl: widget.items?.docs[i].get("urlImage1"),
+                                          imageBuilder: (context, imageProvider) => Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.fill,
+                                              ),
                                             ),
-                                          ), // Optional placeholder widget while loading
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons
-                                                  .error), // Optional error widget if image fails to load
-                                          fit: BoxFit.fill,
+                                          ),
+                                          placeholder: (context, url) {
+                                            print("Fetching image from network...");
+                                            return const Center(
+                                              child: SizedBox(
+                                                height: 50,
+                                                width: 50,
+                                                child: CircularProgressIndicator(),
+                                              ),
+                                            );
+                                          },
+                                          errorWidget: (context, url, error) {
+                                            print("Error loading image: $error");
+                                            return Icon(Icons.error);
+                                          },
                                         ),
                                       ),
                                     ),
@@ -378,27 +445,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: SizedBox(),
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "\$${items?.docs[i].get("itemPrice")}",
+                                          "\$${widget.items?.docs[i].get("itemPrice")}",
                                           style: const TextStyle(
                                             letterSpacing: 2.0,
                                           ),
                                         ),
                                         Text(tAgo.format(
-                                          (items?.docs[i].get('time')).toDate(),
+                                          (widget.items?.docs[i].get('time')).toDate(),
                                         )),
                                       ],
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 2.0),
                                       child: Text(
-                                        "${items?.docs[i].get("itemModel")}"
-                                            .toUpperCase(),style: const TextStyle(fontWeight: FontWeight.bold),
+                                        "${widget.items?.docs[i].get("itemModel")}"
+                                            .toUpperCase(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
-
                                   ],
                                 ),
                               ),
@@ -413,21 +482,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Post',
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) =>  const UploadAdScreen(),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
     );
-  }
-  String getCurrentDocId(int index) {
-    return items?.docs[index].id ?? '';
   }
 }
